@@ -23,13 +23,14 @@
 import SparkMD5 from "spark-md5";
 import { appConsts } from "@/appConsts";
 import { fileMerge } from "@/api/course-info";
-import store from "@/store/index.js";
+import store from "@/store";
 export default {
-  props: ["type", "upType", "more"],
+  props: ["upType", "more"],
   data: function () {
     return {
       appConsts: appConsts,
       loading: "",
+      bar: 0,
       //下面是文件上传
       options: {
         target: "", // 目标上传 URL，可以是字符串也可以是函数，如果是函数的话，则会传入 Uploader.File 实例、当前块 Uploader.Chunk 以及是否是测试模式，默认值为 '/'
@@ -42,18 +43,18 @@ export default {
         chunkSize: 4 * 1024 * 1024, // 分块时按照该值来分。最后一个上传块的大小是可能是大于等于1倍的这个值但是小于两倍的这个值大小，默认 110241024
         // 服务器分片校验函数，秒传及断点续传基础
         checkChunkUploadedByResponse: (chunk, message) => {
-          console.log(chunk, message);
-          let objMessage = JSON.parse(message);
-          if (objMessage.state != 200) {
-            this.$msg.error("上传失败");
-            throw " ";
+          console.log('回调函数', chunk, message)
+          let objMessage = JSON.parse(message)
+          if (objMessage.state !== 200) {
+            this.$message.error("上传失败")
+            throw " "
           }
-          return (objMessage.uploaded || []).indexOf(chunk.offset + 1) >= 0;
+          return (objMessage.uploaded || []).indexOf(chunk.offset + 1) >= 0
         },
         headers: {
-          Authorization: "Bearer " + store.getters.token,
-          ContentType: "multipart/form-data",
+          Authorization: "Bearer " + store.getters.token
         },
+        panelShow: false,
       },
       attrs: {
         accept: [],
@@ -81,53 +82,50 @@ export default {
   methods: {
     //添加文件
     onAdd(file) {
-      var name = file.name;
-      this.bar = 0;
+      const name = file.name
       //截取后缀,判断是否包含,不包含不让上传
       if (
-        this.upType.length != 0 &&
-        this.upType.indexOf(name.substring(name.lastIndexOf("."))) == -1
+        this.upType.length !== 0 &&
+        this.upType.indexOf(name.substring(name.lastIndexOf("."))) === -1
       ) {
         //取消上传
-        file.cancel();
+        file.cancel()
         //格式错误
-        this.$msg.error("格式错误,请上传正确的格式");
+        this.$message.error("格式错误,请上传正确的格式");
       } else {
         // 计算MD5，下文会提到
-        this.computeMD5(file);
+        this.computeMD5(file)
       }
     },
     // 文件进度的回调
     onProgress(rootFile, file, chunk) {
-      this.bar = parseInt((chunk.startByte / chunk.file.size) * 100);
+      this.bar = parseInt((chunk.startByte / chunk.file.size) * 100)
     },
     //上传成功
     onSuccess(rootFile, file, response, chunk) {
-      let _this = this;
       let res = JSON.parse(response);
       let dataPost = {
         fileName: file.name,
         totalChunks: parseInt(chunk.offset + 1),
         Identifier: file.uniqueIdentifier,
       };
-      let { VMId, FilePosition, FileType, step } = this.type;
-      let obj = Object.assign(dataPost, { VMId, FilePosition, FileType, step });
-      console.log(res);
-      if (res.needMerge) {
+      console.log('file success',res);
+      if (res.data) {
         this.loading = this.$loading({
           lock: true,
           text: "合并中,请稍后操作...",
           spinner: "el-icon-loading",
           background: "rgba(0, 0, 0, 0.7)",
         });
-        FileMerge(dataPost)
+        fileMerge(dataPost)
           .then((res) => {
-            if (res.state == 200) {
-              this.$emit("func", true);
+            console.log('filemerge',res)
+            if (res.state === 200) {
+              this.$emit("func", res.data);
             }
           })
           .catch((err) => {
-            this.$msg.error(err.message);
+            this.$message.error(err.message);
           })
           .finally(() => {
             this.loading.close();
@@ -144,15 +142,12 @@ export default {
     //  计算md5，实现断点续传及秒传
     computeMD5(file) {
       let fileReader = new FileReader();
-      let time = new Date().getTime();
       let md5 = "";
       file.pause();
       fileReader.readAsArrayBuffer(file.file);
       fileReader.onload = (e) => {
-        if (file.size != e.target.result.byteLength) {
-          this.error(
-            "Browser reported success but could not read the file until the end."
-          );
+        if (file.size !== e.target.result.byteLength) {
+          this.$message.error('读取文件失败');
           return;
         }
         md5 = SparkMD5.ArrayBuffer.hash(e.target.result);
@@ -160,9 +155,7 @@ export default {
         file.resume();
       };
       fileReader.onerror = function () {
-        this.error(
-          "FileReader onerror was triggered, maybe the browser aborted due to high memory usage."
-        );
+        this.$message.error('读取文件失败');
       };
     },
   },
@@ -194,6 +187,5 @@ v-deep .uploader-example .uploader-list {
   max-height: 440px;
   overflow: auto;
   overflow-x: hidden;
-  overflow-y: auto;
 }
 </style>

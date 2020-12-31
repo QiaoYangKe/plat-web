@@ -1,46 +1,5 @@
 <template>
   <el-container>
-    <el-header height="auto">
-      <el-form :inline="true" ref="queryForm" :model="queryForm" class="demo-form-inline" size="small">
-        <el-form-item prop="startTime">
-          <el-date-picker
-            v-model="queryForm.startTime"
-            type="datetime"
-            placeholder="起始时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item prop="endTime">
-          <el-date-picker
-            v-model="queryForm.endTime"
-            type="datetime"
-            placeholder="终止时间">
-          </el-date-picker>
-        </el-form-item>
-        <!-- <el-form-item label="查询条件" prop="studentNo">
-          <el-input v-model="queryForm.studentNo" placeholder="请输入..."></el-input>
-        </el-form-item> -->
-        <!-- <el-form-item label="成功" prop="name">
-          <el-select v-model="queryForm.name" placeholder="请选择">
-            <el-option
-              key="0"
-              label="成功"
-              value="0">
-            </el-option>
-            <el-option
-              key="1"
-              label="失败"
-              value="1">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
-        <el-form-item>
-          <el-button type="primary" @click="query">查询</el-button>
-          <el-button class="add-button" type="primary" @click="delLogs">删除</el-button>
-          <el-button class="add-button" type="primary" @click="resetLogs">清空</el-button>
-          <el-button class="add-button" type="primary" @click="resetForm('queryForm')">重置查询条件</el-button>
-        </el-form-item>
-      </el-form>
-    </el-header>
     <el-main>
         <el-table
           v-loading="listLoading"
@@ -48,22 +7,27 @@
           element-loading-text="加载中"
           border
           fit
-          size="mini"
+          size="small"
           highlight-current-row
-          @selection-change="handleSelectionChange"
         >
-          <el-table-column
-            type="selection"
-            width="40">
-          </el-table-column>
-          <el-table-column label="标题">
+          <el-table-column label="名称">
             <template slot-scope="scope">
-              {{ scope.row.manageMsg }}
+              {{ scope.row.vmName }}
             </template>
           </el-table-column>
-          <el-table-column label="成功" align="center">
+          <el-table-column label="类型" align="center">
             <template slot-scope="scope">
-              <span>{{ !scope.row.manageType ? '成功': '失败'}}</span>
+              <span>{{ scope.row.vmType }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="系统" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.vmSystem }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="端口" align="center">
+           <template slot-scope="scope">
+              <span>{{ scope.row.vncPort }}</span>
             </template>
           </el-table-column>
           <el-table-column label="时间" align="center">
@@ -71,23 +35,43 @@
               <span>{{ scope.row.createTime | dateFormat }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作人" align="center">
+          <el-table-column label="操作" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.userName }}</span>
+              <el-button type="text" size="small" @click="clickSee(scope.row)">查看</el-button>
+              <el-button type="text" size="small" @click="cloneTemplate(scope.row)">克隆</el-button>
             </template>
           </el-table-column>
         </el-table>
-       <Pagination v-show="total>0" :total="total" :page.sync="queryForm.pageIndex" :limit.sync="queryForm.pageSize" @pagination="query" />
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="40%">
+        <el-form label-width="80px" :model="detailMessage">
+          <el-form-item label="名称">
+            <span>{{ detailMessage.vmName }}</span>
+          </el-form-item>
+          <el-form-item label="IP">
+            <span>{{ detailMessage.vmip }}</span>
+          </el-form-item>
+          <el-form-item label="端口号">
+            <span>{{ detailMessage.vncPort }}</span>
+          </el-form-item>
+          <el-form-item label="名称">
+            <span>{{ detailMessage.vmName }}</span>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+       <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+      </el-dialog>
     </el-main>
   </el-container>
 </template>
 
 <script>
-  import Pagination from '@/components/Pagination/index.vue'
-  import { logInfoList, deleteLogs, clearAll } from '@/api/log-manager.js'
+  import { templateList, cloneVm, cloneVmById, vmById, createVm } from '@/api/template-manager.js'
 export default {
-  name: 'LogManager',
-  components: { Pagination },
+  name: 'TemplateManager',
   filters: {
     dateFormat (val) {
       if (val == null || val === '') {
@@ -107,15 +91,11 @@ export default {
   data() {
     return {
       listLoading: true,
+      dialogVisible: false,
+      detailMessage: {},
       list: [],
-      selectList: [],
       total: 0,
-      queryForm: {
-        pageIndex: 1,
-        pageSize: 10,
-        startTime: undefined,
-        endTime: undefined
-      }
+      queryForm: {}
     }
   },
   mounted() {
@@ -123,67 +103,41 @@ export default {
   },
   methods: {
     query() {
-      logInfoList(this.queryForm).then(res => {
-        this.list = res.obj
-        this.total = res.total
+      templateList(this.queryForm).then(res => {
+        this.list = res.data
         this.listLoading = false
       })
     },
-    handleSelectionChange(val) {
-      this.selectList = val
+    async clickSee(row) {
+      await vmById(row.id).then(res => {
+        this.detailMessage = res.data
+      })
+      this.dialogVisible = true
     },
-    resetLogs() {
-      clearAll().then(res => {
+    cloneTemplate(row) {
+      const loading = this.$loading({
+          lock: true,
+          text: '请稍等，大概2-3分钟',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+      cloneVmById(row.id).then(res => {
         this.$message({
           type: 'success',
-          message: '清空成功'
+          message: '克隆成功'
         })
+        loading.close()
         this.query()
       })
-    },
-    delLogs() {
-      if(this.selectList.length == 0) {
-        this.$message({
-          type: 'warning',
-          message: '至少选中一条'
-        })
-        return
-      }
-      let list = this.selectList
-      let listIds = []
-      for(let i=0; i < list.length; i++) {
-        listIds.push(list[i].id)
-      }
-      console.log(listIds)
-      deleteLogs(listIds).then(res => {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
-        })
-        this.query()
-      })
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
+    }
   }
 }
 </script>
 
 <style lang='scss' scoped>
   .el-container {
-    .el-header {
-      padding: 20px 35px 3px 35px;
-      display: flex;
-      flex-flow: row;
-      .demo-form-inline {
-        .el-form-item {
-          margin-bottom: 0;
-        }
-      }
-    }
     .el-main {
-      padding: 10px 35px;
+      padding: 20px;
     }
   }
   .secret-button {

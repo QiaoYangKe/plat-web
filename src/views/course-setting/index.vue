@@ -29,6 +29,8 @@
               <el-select
                 v-model="ruleForm.classIds"
                 multiple
+                clearable
+                collapse-tags
                 placeholder="请选择班级"
               >
                 <el-option
@@ -39,6 +41,22 @@
                 ></el-option>
               </el-select>
             </el-form-item>
+            <!-- <el-form-item label="添加虚拟机" prop="vmInfoIdList">
+              <el-select
+                v-model="ruleForm.vmInfoIdList"
+                placeholder="请选择班虚拟机"
+                multiple
+                collapse-tags
+                clearable
+              >
+                <el-option
+                  v-for="item in templates"
+                  :key="item.id"
+                  :label="item.vmName"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item> -->
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')"
                 >确定</el-button
@@ -94,26 +112,8 @@
               <uploader
                 @func="getData"
                 :more="true"
-                :type="{
-                  VMId: obj.id,
-                  FilePosition: 1,
-                  FileType: 1,
-                  step: '1',
-                }"
                 :upType="['.mp4']"
               ></uploader>
-              <!-- <el-upload
-                class="upload-demo"
-                action
-                :auto-upload="true"
-                :http-request="videoUpload"
-                :limit="1"
-                style="float: right"
-              >
-                <el-button slot="trigger" size="mini" type="primary"
-                  >上传</el-button
-                >
-              </el-upload> -->
             </div>
           </el-card>
         </el-col>
@@ -125,7 +125,8 @@
               <span class="span-class">可视化操作</span>
             </div>
             <div class="content-class">
-              <el-input v-model="ruleForm.urlExplain"></el-input>
+              <!-- <el-input v-model="ruleForm.urlExplain"></el-input> -->
+              <span>{{ ruleForm.urlExplain }}</span>
               <el-link :href="ruleForm.urlExplain">点击进入可视化操作</el-link>
             </div>
           </el-card>
@@ -174,10 +175,11 @@ import {
   uploadInstructions,
   uploadTopics
 } from "@/api/course-info.js";
+// import { cloneVm } from '@/api/template-manager.js'
 import { classInfoDic } from "@/api/class-info.js";
 import { uploadUserInfo } from "@/api/user.js";
 import videoImg from "@/assets/images/timg.jpg";
-import appConsts from "@/appConsts.js";
+import { appConsts } from "@/appConsts.js";
 import uploader from "@/components/Uploader"
 export default {
   name: "CourseSetting",
@@ -195,13 +197,9 @@ export default {
         instructionsPath: undefined,
         topicPath: undefined,
         urlExplain: undefined,
-        vMInfoId: undefined,
+        // vmInfoIdList: [],
       },
-      obj: {
-                id: '',
-                vmName: '',
-                vmSteps: []
-            },
+      // templates: [],
       playerOptions: {
         playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
         autoplay: false, //如果true,浏览器准备好时开始回放。
@@ -239,21 +237,37 @@ export default {
         classIds: [
           { required: true, message: "请选择班级", trigger: "change" },
         ],
+        vmInfoIdList: [
+          { required: true, message: "请选择班级", trigger: "change" },
+        ],
       },
     };
   },
   mounted() {
-    this.initCourse();
-    this.initClassList();
+    this.initClassList()
+    // this.initTemplateList()
+    this.initCourse()
   },
   methods: {
-    getData() {
-      console.log("getData方法")
+    // initTemplateList() {
+    //   cloneVm().then(res => {
+    //     this.templates = res.data
+    //   })
+    // },
+    getData(val) {
+      console.log("getData方法", val)
+      this.ruleForm.videoPath = val
+        this.playerOptions.sources = [
+            {
+              src: appConsts.serverUrl + '/' + val,
+              type: 'video/mp4'
+            },
+          ];
     },
     initCourse() {
+      console.log(this.$route.query.id)
       if (this.$route.query.id != null) {
         courseInfoById(this.$route.query.id).then((res) => {
-          console.log(res);
           this.ruleForm.id = res.data.id;
           this.ruleForm.account = res.data.account;
           this.ruleForm.classIds = res.data.classIdList;
@@ -263,7 +277,7 @@ export default {
           this.ruleForm.topicPath = res.data.topicPath;
           this.ruleForm.urlExplain = res.data.urlExplain;
           this.ruleForm.videoPath = res.data.videoPath;
-          this.ruleForm.vmInfoId = res.data.vmInfoId;
+          // this.ruleForm.vmInfoIdList = res.data.vmInfos.map(item => item.id);
         });
       }
     },
@@ -294,7 +308,7 @@ export default {
                 instructionsPath: undefined,
                 topicPath: undefined,
                 urlExplain: undefined,
-                vMInfoId: undefined,
+                VMInfoIdList: undefined,
               };
             });
           }
@@ -318,24 +332,12 @@ export default {
     uploadTopic(file) {
       let param = new FormData();
       param.append("files", file.file);
+      console.log(2,param.get("files"))
       uploadTopics(param).then((res) => {
         this.ruleForm.topicPath = res.data;
       });
     },
 
-    videoUpload(options) {
-      // let param = new FormData();
-      // param.append("files", file.file);
-      // uploadUserInfo(param).then((res) => {
-      //   this.ruleForm['videoPath'] = res.data;
-      //   this.playerOptions.sources = [
-      //       {
-      //         src: appConsts.serverUrl + this.ruleForm.videoPath,
-      //         type: file.type,
-      //       },
-      //     ];
-      // });
-    },
     initClassList() {
       classInfoDic().then((res) => {
         this.classList = res.data;
@@ -388,6 +390,10 @@ export default {
   margin: 40px 30px 0 10px;
   .el-form-item {
     margin: 50px 0 0 0;
+    width: 400px;
+    .el-select {
+      width: 300px;
+    }
   }
 }
 
@@ -402,8 +408,6 @@ export default {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
-    /*width: 100%;*/
-    /*align-self: start;*/
   }
   .link-type {
     display: block;

@@ -117,6 +117,7 @@
         queryForm: {
           pageIndex: 1,
           pageSize: 10,
+          userType: 0,
           classInfoId: undefined,
           userName: undefined,
           stuNo: undefined

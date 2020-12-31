@@ -49,6 +49,7 @@
           border
           fit
           size="mini"
+          tooltip-effect="light"
           highlight-current-row
           @selection-change="handleSelectionChange"
         >
@@ -56,7 +57,7 @@
             type="selection"
             width="40">
           </el-table-column>
-          <el-table-column label="标题">
+          <el-table-column label="标题" show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.manageMsg }}
             </template>

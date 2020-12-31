@@ -10,7 +10,7 @@ export function login(data) {
 
 export function userList(data) {
   return request({
-    url: '/api/UserInfo/StudentList',
+    url: '/api/UserInfo/UserList',
     method: 'post',
     data
   })
@@ -27,6 +27,14 @@ export function updatePwd(data) {
 export function updateUser(data) {
   return request({
     url: '/api/UserInfo/Update',
+    method: 'post',
+    data
+  })
+}
+
+export function addUser(data) {
+  return request({
+    url: '/api/UserInfo/Create',
     method: 'post',
     data
   })

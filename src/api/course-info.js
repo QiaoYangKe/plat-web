@@ -74,6 +74,15 @@ export function deleteCourse(id) {
   })
 }
 
+export function teamMenmberByClassDic(classId) {
+  return request({
+    url: '/api/ClassInfo/TeamMenmberByClassDic',
+    method: 'get',
+    params: classId
+  })
+}
+
+
 export function courseInfoById(id) {
   return request({
     url: `/api/CourseInfo/InfoById/${id}`,

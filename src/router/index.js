@@ -83,6 +83,13 @@ export const asyncRoutes = [
         component: () => import('@/views/course-manager'),
         name: 'CourseManager',
         meta: { title: '课程管理', sqlRouter: 'CourseInfo', icon: 'course-manager', affix: true }
+      },
+      {
+        path: '/course-detail',
+        component: () => import('@/views/course-manager/courseDetail'),
+        name: 'CourseDetail',
+        hidden: true,
+        meta: { title: '课程管理', sqlRouter: 'CourseInfo', icon: 'course-manager', affix: true }
       }
     ]
   },
@@ -107,6 +114,13 @@ export const asyncRoutes = [
       {
         path: '/course-learn',
         component: () => import('@/views/course-learn'),
+        name: 'CourseLearn',
+        hidden: true,
+        meta: { title: '课程学习', sqlRouter: 'UserInfo', icon: 'course-learn', affix: true }
+      },
+      {
+        path: '/course-learn-detail',
+        component: () => import('@/views/course-learn/courseLearnDetail'),
         name: 'CourseLearn',
         meta: { title: '课程学习', sqlRouter: 'UserInfo', icon: 'course-learn', affix: true }
       }
@@ -201,6 +215,32 @@ export const asyncRoutes = [
         component: () => import('@/views/jurisdiction-manager'),
         name: 'TeacherManager',
         meta: { title: '权限管理', sqlRouter: 'UserInfo', icon: 'jurisdiction-manager', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/template-manager',
+    component: Layout,
+    redirect: '/template-manager',
+    children: [
+      {
+        path: '/template-manager',
+        component: () => import('@/views/template-manager'),
+        name: 'TemplateManager',
+        meta: { title: '模板管理', sqlRouter: 'Template', icon: 'jurisdiction-manager', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/virtual-machine-manager',
+    component: Layout,
+    redirect: '/virtual-machine-manager',
+    children: [
+      {
+        path: '/virtual-machine-manager',
+        component: () => import('@/views/virtual-machine-manager'),
+        name: 'TemplateManager',
+        meta: { title: '虚拟机管理', sqlRouter: 'VMInfo', icon: 'jurisdiction-manager', affix: true }
       }
     ]
   },

@@ -4,7 +4,7 @@
       <el-form :inline="true" :model="queryForm" class="demo-form-inline" size="small">
         <el-form-item>
           <el-select v-model="queryForm.classInfoId" placeholder="请选择班级">
-            <el-option v-for="item in classList" :label="item.className" :value="item.id"></el-option>
+            <el-option v-for="item in classList" :key="item.id" :label="item.className" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -26,12 +26,15 @@
             :file-list="fileList">
             <el-button size="small" type="primary">新增上传</el-button>
           </el-upload>
-          <!--<el-button class="add-button" type="primary" icon="el-icon-plus" @click="addClick">新增</el-button>-->
+          <el-button type="primary" size="small" @click="addClick">新增</el-button>
         </el-form-item>
         <el-dialog title="学生信息" :visible.sync="dialogFormVisible">
           <el-form :model="form" style="display: flex;flex-flow: row">
             <el-form-item label="学生名称">
               <el-input v-model="form.userName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="学号">
+              <el-input v-model="form.stuNo" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="所属小组">
               <el-input v-model="form.groupName" autocomplete="off"></el-input>
@@ -102,7 +105,7 @@
 
 <script>
   import Pagination from '@/components/Pagination/index.vue'
-  import { userList, resetPwd, updateUser, deleteUser, uploadUserInfo, importExcel } from '@/api/user.js'
+  import { userList, resetPwd, updateUser, deleteUser, uploadUserInfo, importExcel,addUser } from '@/api/user.js'
   import { classInfoDic } from '@/api/class-info.js'
 export default {
   name: 'StudentManager',
@@ -120,6 +123,7 @@ export default {
       queryForm: {
         pageIndex: 1,
         pageSize: 10,
+        userType: 1,
         classInfoId: undefined,
         userName: undefined,
         stuNo: undefined
@@ -143,7 +147,30 @@ export default {
         this.listLoading = false
       })
     },
+    addClick() {
+      this.form = {
+        id: null,
+        stuNo: "",
+        userAccount: "",
+        userName: "",
+        userType: 1,
+        vmCount: 0,
+        groupName: "",
+        classInfoId: ""
+      }
+      this.dialogFormVisible = true
+    },
     editSubmit() {
+      if(this.form.id == null) {
+        addUser(this.form).then(res => {
+          this.$message({
+            type: 'success',
+            message: '添加成功'
+          })
+          this.query()
+          this.dialogFormVisible = false
+        })
+      }
       updateUser(this.form).then(res => {
         this.$message({
           type: 'success',

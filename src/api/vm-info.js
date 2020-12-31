@@ -1,100 +1,116 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function VMClone(data) {
   return request({
-    url: '/api/Login/Login',
+    url: '/api/VMInfo/VMClone',
     method: 'post',
     data
   })
 }
 
-export function userList(data) {
+export function GuestIP(data) {
   return request({
-    url: '/api/UserInfo/UserList',
+    url: '/api/VMInfo/GuestIP',
     method: 'post',
     data
   })
 }
 
-export function updatePwd(data) {
+export function VMInfoByUser(data) {
   return request({
-    url: '/api/UserInfo/UpdatePwd',
+    url: '/api/VMInfo/VMInfoByUser',
     method: 'post',
     data
   })
 }
 
-export function updateUser(data) {
+export function VmById(vmId) {
   return request({
-    url: '/api/UserInfo/Update',
-    method: 'post',
-    data
-  })
-}
-
-export function addUser(data) {
-  return request({
-    url: '/api/UserInfo/Create',
-    method: 'post',
-    data
-  })
-}
-
-export function resetPwd(userId) {
-  return request({
-    url: `/api/UserInfo/ResetPwd/${userId}`,
+    url: `/api/VMInfo/VmById/${vmId}`,
     method: 'get'
   })
 }
 
-export function deleteUser(userId) {
+export function VMStart(data) {
   return request({
-    url: `/api/UserInfo/Delete/${userId}`,
-    method: 'get'
-  })
-}
-
-export function teamMember() {
-  return request({
-    url: '/api/Currency/TeamMember',
-    method: 'get'
-  })
-}
-
-export function getInfo() {
-  return request({
-    url: '/api/Currency/UserInfo',
-    method: 'get'
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/api/Login/LogOut',
-    method: 'get'
-  })
-}
-
-export function getAuthorize() {
-  return request({
-    url: '/api/Authorize/AuthorizeByAll',
-    method: 'get'
-  })
-}
-
-export function uploadUserInfo(param) {
-  return request({
-    url: '/api/UserInfo/UploadFile',
-    method: 'post',
-    headers: {'Content-Type':'multipart/form-data'},
-    data:param
-  })
-}
-
-export function importExcel(filePath) {
-  return request({
-    url: '/api/UserInfo/ImportExcel',
+    url: '/api/VMInfo/VMStart',
     method: 'get',
-    params: filePath
+    params: data
   })
 }
+
+export function VMStop(data) {
+  return request({
+    url: '/api/VMInfo/VMStop',
+    method: 'get',
+    params: data
+  })
+}
+
+export function VMDestroy(vMId) {
+  return request({
+    url: `/api/VMInfo/VMDestroy/${vMId}`,
+    method: 'get'
+  })
+}
+
+export function VMSuspend(vMId) {
+  return request({
+    url: `/api/VMInfo/VMSuspend/${vMId}`,
+    method: 'get'
+  })
+}
+
+export function VMResum(vMId) {
+  return request({
+    url: `/api/VMInfo/VMResum/${vMId}`,
+    method: 'get'
+  })
+}
+
+export function VMReboot(vMId) {
+  return request({
+    url: `/api/VMInfo/VMReboot/${vMId}`,
+    method: 'get'
+  })
+}
+
+export function VMRemove(vMId) {
+  return request({
+    url: `/api/VMInfo/VMRemove/${vMId}`,
+    method: 'get'
+  })
+}
+
+export function VMRebootHost() {
+  return request({
+    url: '/api/VMInfo/VMRebootHost',
+    method: 'get'
+  })
+}
+
+export function VMRebootNet(data) {
+  return request({
+    url: '/api/VMInfo/VMRebootNet',
+    method: 'get',
+    params: data
+  })
+}
+
+export function VMStatusQuery(data) {
+  return request({
+    url: '/api/VMInfo/VMStatusQuery',
+    method: 'get',
+    params: data
+  })
+}
+
+
+export function BindGroup(data) {
+  return request({
+    url: '/api/VMManage/BindGroup',
+    method: 'post',
+    data
+  })
+}
+

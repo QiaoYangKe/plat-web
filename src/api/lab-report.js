@@ -48,6 +48,13 @@ export function viewScoreInfoForPDF(data) {
   })
 }
 
+export function scoreEcharts(data) {
+  return request({
+    url: '/api/ScoreInfo/ScoreEcharts',
+    method: 'get',
+    params: data
+  })
+}
 
 export function uploadRport(data) {
   return request({
