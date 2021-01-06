@@ -1,4 +1,7 @@
 <template>
+<div>
+    <el-button type="primary" @click="exitLesson" class="exit-button" size="small">退出课程</el-button>
+
   <el-tabs v-model="activeName" @tab-click="handleClick" class="tab-style">
     <el-tab-pane label="课程学习" name="first">
       <el-container>
@@ -66,7 +69,7 @@
           <div>
             <el-card :body-style="{ width: '800px' }">
               <div class="clear-fix">
-                <span class="span-class">虚拟机IP</span>
+                <span class="span-class">虚拟机IP {{ guestIp }}</span>
                 <span>小组成员：</span>
                 <span>{{ teamMembers.map((v) => v.userName).join("，") }}</span>
               </div>
@@ -74,7 +77,7 @@
                 <iframe
                   style="width: 100%; height: 760px"
                   allowfullscreen="true"
-                  src="http://10.10.10.1:8790/vnc.html?path=?token=pptp%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3_%E6%9C%8D%E5%8A%A1%E7%AB%AF_20201112090328_0"
+                  src="http://10.10.0.1:8790/vnc.html?path=?token=pptp%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3_%E6%9C%8D%E5%8A%A1%E7%AB%AF_20201112090328_0"
                 ></iframe>
               </div>
             </el-card>
@@ -106,6 +109,7 @@
       </el-container>
     </el-tab-pane>
   </el-tabs>
+</div>
 </template>
 
 <script>
@@ -114,6 +118,7 @@ import { teamMember } from "@/api/user.js";
 import { addScoreInfo, uploadRport } from "@/api/lab-report";
 import { courseInfoById } from "@/api/course-info";
 import { appConsts } from "@/appConsts";
+import { GuestIP } from "@/api/vm-info"
 export default {
   name: "CourseDetail",
   data() {
@@ -122,6 +127,7 @@ export default {
       teamMembers: [],
       currentCourse: {},
       fileCount: 0,
+      guestIp: '',
       ruleForm: {
         lessonFile: [],
         courseInfoId: "",
@@ -153,6 +159,9 @@ export default {
     this.initCourse();
   },
   methods: {
+    exitLesson() {
+      this.$router.push("/course-manager");
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
@@ -164,11 +173,12 @@ export default {
       this.fileCount = fileList.length;
     },
     changeCourse(val) {
+      console.log(appConsts.serverUrl + this.currentCourse.videoPath)
       courseInfoById(val).then((res) => {
         this.currentCourse = res.data;
         this.playerOptions.sources = [
           {
-            src: appConsts.serverUrl + "/" + this.currentCourse.videoPath,
+            src: appConsts.serverUrl + this.currentCourse.videoPath,
             type: "video/mp4",
           },
         ];
@@ -209,6 +219,9 @@ export default {
       this.$refs.upload.submit();
     },
     teamMember() {
+      GuestIP().then(res => {
+        this.guestIp = res.data
+      })
       teamMember().then((res) => {
         this.teamMembers = res.data;
       });
@@ -218,6 +231,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.exit-button {
+    position: absolute;
+    top: 5px;
+    left: calc(100% - 100px);
+    z-index: 999;
+}
 .tab-style {
   padding: 0;
   height: 100%;

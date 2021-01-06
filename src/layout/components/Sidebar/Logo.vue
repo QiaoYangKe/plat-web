@@ -2,12 +2,14 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="require('@/assets/logo-icon/logo.png')" class="sidebar-logo">
-        <!--<h1 v-else class="sidebar-title">{{ title }} </h1>-->
+        <!-- <img v-if="logo" :src="require('@/icons/svg/logo.svg')" class="sidebar-logo"> -->
+        <svg-icon icon-class="logo" class="sidebar-logo"/>
+        <h1 class="sidebar-title">{{ title }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="require('@/assets/logo-icon/logo.png')" class="sidebar-logo">
-<!--        <h1 class="sidebar-title">{{ title }} </h1>-->
+        <!-- <img v-if="logo" :src="require('@/icons/svg/logo.svg')" class="sidebar-logo"> -->
+       <svg-icon icon-class="logo" class="sidebar-logo"/>
+       <h1 class="sidebar-title">{{ title }} </h1>
       </router-link>
     </transition>
   </div>
@@ -55,27 +57,27 @@ export default {
     width: 100%;
 
     & .sidebar-logo {
-      width: 175px;
-      height: 32px;
+      width: 30px;
+      height: 40px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin-right: -5px;
     }
 
     & .sidebar-title {
       display: inline-block;
       margin: 0;
       color: #fff;
-      font-weight: 600;
+      font-weight: 550;
       line-height: 50px;
-      font-size: 14px;
-      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
       vertical-align: middle;
     }
   }
 
   &.collapse {
     .sidebar-logo {
-      margin-right: 0px;
+      margin-left: 10px;
     }
   }
 }

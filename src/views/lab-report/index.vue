@@ -5,7 +5,6 @@
         :inline="true"
         :model="queryForm"
         class="demo-form-inline"
-        size="small"
       >
         <el-form-item>
           <el-select
@@ -54,7 +53,7 @@
         element-loading-text="加载中"
         border
         fit
-        size="mini"
+        :header-cell-style="{background: '#eeeeee'}"
         highlight-current-row
       >
         <el-table-column align="center" label="学号" width="95">

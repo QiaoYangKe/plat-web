@@ -54,11 +54,11 @@ const actions = {
           reject('获取信息失败，请重新登录')
         }
         console.log(JSON.stringify(data))
-        const { userType, name, avatar, introduction } = data
+        const { userType, userName, avatar, introduction } = data
         const roles = []
         roles.push(userType)
         commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
+        commit('SET_NAME', userName)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
         resolve(data)

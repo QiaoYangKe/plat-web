@@ -17,7 +17,7 @@
         border
         fit
         tooltip-effect="light"
-        size="mini"
+        :header-cell-style="{background: '#eeeeee'}"
         highlight-current-row
       >
         <el-table-column align="center" width="50px">
@@ -25,7 +25,7 @@
         </el-table-column>
         <el-table-column align="center" label="反馈人">
           <template slot-scope="scope">
-            {{ scope.row.feedBackUserInfoName }}
+            {{ scope.row.fromUserInfoName }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="反馈标题">
@@ -45,7 +45,7 @@
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
-            <el-button size="small" type="text" @click="handleClick(scope.row)"
+            <el-button type="text" @click="handleClick(scope.row)"
               ><i class="el-icon-s-promotion" />查看</el-button
             >
           </template>

@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header height="auto">
-      <el-form :inline="true" :model="queryForm" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="queryForm" class="demo-form-inline">
         <el-form-item>
           <el-select
             clearable
@@ -49,7 +49,7 @@
           element-loading-text="加载中"
           border
           fit
-          size="mini"
+          :header-cell-style="{background: '#eeeeee'}"
           tooltip-effect="light"
           highlight-current-row
         >

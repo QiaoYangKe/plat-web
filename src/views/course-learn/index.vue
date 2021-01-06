@@ -1,12 +1,7 @@
 <template>
   <el-container>
     <el-header height="auto">
-      <el-form
-        :inline="true"
-        :model="queryForm"
-        class="demo-form-inline"
-        size="small"
-      >
+      <el-form :inline="true" :model="queryForm" class="demo-form-inline">
         <el-form-item>
           <el-select
             v-model="queryForm.classId"
@@ -33,7 +28,7 @@
         element-loading-text="加载中"
         border
         fit
-        size="mini"
+        :header-cell-style="{ background: '#eeeeee' }"
         highlight-current-row
       >
         <el-table-column align="center" label="课程编号" width="95">
@@ -85,7 +80,7 @@ import {
   deleteCourse,
   courseInfoById,
   updateCourseState,
-  teamMenmberByClassDic,
+  teamMenmberByClassDic
 } from "@/api/course-info.js";
 import { classInfoDic } from "@/api/class-info.js";
 import { vmClone } from "@/api/template-manager.js";
@@ -118,7 +113,7 @@ export default {
           sec;
         return times;
       }
-    },
+    }
   },
   data() {
     return {
@@ -135,15 +130,15 @@ export default {
       form: {
         classId: "",
         groupName: "",
-        vmInfoIds: [],
+        vmInfoIds: []
       },
       queryForm: {
         pageIndex: 1,
         pageSize: 10,
         classId: undefined,
         name: undefined,
-        studentNo: undefined,
-      },
+        studentNo: undefined
+      }
     };
   },
   mounted() {
@@ -152,53 +147,56 @@ export default {
   },
   methods: {
     initClassList() {
-      classInfoDic().then((res) => {
+      classInfoDic().then(res => {
         this.classList = res.data;
       });
     },
     enterCourse(row) {
       this.courseClassList = this.classList.filter(
-        (item) => row.classIdList.indexOf(item.id) !== -1
+        item => row.classIdList.indexOf(item.id) !== -1
       );
-      courseInfoById(row.id).then((res) => {
-        this.vmInfos = res.data.vmInfos
-        this.dialogFormVisible = true
+      courseInfoById(row.id).then(res => {
+        this.vmInfos = res.data.vmInfos;
+        this.dialogFormVisible = true;
       });
-      this.$router.push({ path: "/course-learn-detail", query: { id: row.id } });
+      this.$router.push({
+        path: "/course-learn-detail",
+        query: { id: row.id }
+      });
     },
     handelChange(val) {
       this.groupLoading = true;
       this.form.groupName = "";
 
       teamMenmberByClassDic({ classId: val }).then(res => {
-        this.groupList = res.data
-        this.groupLoading = false
-      })
+        this.groupList = res.data;
+        this.groupLoading = false;
+      });
     },
     query() {
-      courseList(this.queryForm).then((res) => {
+      courseList(this.queryForm).then(res => {
         this.list = res.data;
         this.total = res.total;
         this.listLoading = false;
       });
     },
     changeCourseState(row) {
-      updateCourseState(row.id).then((res) => {
+      updateCourseState(row.id).then(res => {
         this.$message({
           type: "success",
-          message: "修改成功",
+          message: "修改成功"
         });
         this.query();
       });
     },
     editCourse(row) {
       this.$router.push({ path: "/course-setting", query: { id: row.id } });
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .el-container {
   .el-header {
     padding: 20px 35px 3px 35px;

@@ -7,7 +7,7 @@
           element-loading-text="加载中"
           border
           fit
-          size="small"
+          :header-cell-style="{background: '#eeeeee'}"
           highlight-current-row
         >
           <el-table-column label="名称">

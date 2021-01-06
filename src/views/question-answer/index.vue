@@ -5,7 +5,6 @@
         :inline="true"
         :model="queryForm"
         class="demo-form-inline"
-        size="small"
       >
         <el-form-item>
           <el-select clearable v-model="queryForm.classId" placeholder="请选择班级">
@@ -42,7 +41,7 @@
         border
         fit
         tooltip-effect="light"
-        size="mini"
+        :header-cell-style="{background: '#eeeeee'}"
         highlight-current-row
       >
         <el-table-column align="center" width="50px">
@@ -50,7 +49,7 @@
         </el-table-column>
         <el-table-column align="center" label="反馈人">
           <template slot-scope="scope">
-            {{ scope.row.feedBackUserInfoName }}
+            {{ scope.row.fromUserInfoName }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="反馈标题">

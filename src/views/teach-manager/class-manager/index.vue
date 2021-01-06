@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header height="auto">
-      <el-button size="small" class="add-button" type="primary" icon="el-icon-plus" @click="addClick">新增</el-button>
+      <el-button class="add-button" type="primary" icon="el-icon-plus" @click="addClick">新增</el-button>
     </el-header>
     <el-main>
         <el-table
@@ -10,7 +10,7 @@
           element-loading-text="加载中"
           border
           fit
-          size="mini"
+          :header-cell-style="{background: '#eeeeee'}"
           highlight-current-row
         >
           <el-table-column align="center" label="班级">

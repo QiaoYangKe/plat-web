@@ -1,9 +1,5 @@
 <template>
   <el-container>
-    <el-header height="auto">
-<!--      <el-button size="small" type="primary" icon="el-icon-plus" @click="addClick">新增</el-button>
-      <el-button type="danger" icon="el-icon-delete" size="small" @click="onSubmit">删除</el-button>-->
-    </el-header>
     <el-main>
         <el-table
           v-loading="listLoading"
@@ -12,8 +8,8 @@
           element-loading-text="加载中"
           border
           fit
-          size="mini"
           highlight-current-row
+           :header-cell-style="{background: '#eeeeee'}"
         >
           <el-table-column label="名称">
             <template slot-scope="scope">
@@ -122,12 +118,6 @@ export default {
         }
       })
     },
-    addClick() {
-      alert('新增')
-    },
-    handleClick(row) {
-      alert('查看')
-    },
     afterEdit(row) {
       const list = this.$refs[row.id].getCheckedKeys()
       if(row.accessValues.length === list.length && row.accessValues.filter(item => list.indexOf(item) === -1).length === 0) {
@@ -147,8 +137,8 @@ export default {
         for(let i = 0; i < authors.length; i++) {
           row.accessValues.push(authors[i].AccessValue)
         }
+        this.$refs[row.id].setCheckedKeys(row.accessValues)
       })
-      await this.$refs[row.id].setCheckedKeys(row.accessValues);
     },
     query() {},
     handleCurrentChange() {}
@@ -158,16 +148,8 @@ export default {
 
 <style lang='scss' scoped>
   .el-container {
-    .el-header {
-      padding: 10px 10px 0 10px;
-      display: flex;
-      flex-flow: row-reverse;
-      .el-button {
-        margin-left: 10px;
-      }
-    }
     .el-main {
-      padding: 10px;
+      padding: 20px 35px 10px 35px;
     }
   }
   .secret-button {

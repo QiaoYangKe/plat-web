@@ -1,10 +1,10 @@
 <template>
   <el-container>
     <el-header height="auto">
-      <el-form :inline="true" :model="queryForm" class="demo-form-inline" size="small">
+      <el-form :inline="true" :model="queryForm" class="demo-form-inline">
         <el-form-item>
           <el-select v-model="queryForm.classInfoId" placeholder="请选择班级">
-            <el-option v-for="item in classList" :label="item.className" :value="item.id"></el-option>
+            <el-option v-for="item in classList" :label="item.className" :key="item.id" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -15,6 +15,10 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="query">查询</el-button>
+          <!--<el-button class="add-button" type="primary" icon="el-icon-plus" @click="addClick">新增</el-button>-->
+        </el-form-item>
+        
+        <el-form-item>
           <el-upload
             class="upload-demo"
             action
@@ -24,9 +28,8 @@
             style="float: right"
             :show-file-list="false"
             :file-list="fileList">
-            <el-button size="small" type="primary">新增上传</el-button>
+            <el-button type="primary">新增上传</el-button>
           </el-upload>
-          <!--<el-button class="add-button" type="primary" icon="el-icon-plus" @click="addClick">新增</el-button>-->
         </el-form-item>
         <el-dialog title="学生信息" :visible.sync="dialogFormVisible">
           <el-form :model="form">
@@ -35,7 +38,7 @@
             </el-form-item>
             <el-form-item label="班级">
               <el-select v-model="form.classInfoId" placeholder="请选择">
-                <el-option v-for="item in classList" :label="item.className" :value="item.id"></el-option>
+                <el-option v-for="item in classList" :key="item.id" :label="item.className" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="最大连接">
@@ -56,7 +59,7 @@
         element-loading-text="加载中"
         border
         fit
-        size="mini"
+        :header-cell-style="{background: '#eeeeee'}"
         highlight-current-row
       >
         <el-table-column align="center" label="学号">

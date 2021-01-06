@@ -80,7 +80,7 @@ export const asyncRoutes = [
     children: [
       {
         path: '/course-manager',
-        component: () => import('@/views/course-manager'),
+        component: () => import('@/views/course-manager/index'),
         name: 'CourseManager',
         meta: { title: '课程管理', sqlRouter: 'CourseInfo', icon: 'course-manager', affix: true }
       },
@@ -115,13 +115,13 @@ export const asyncRoutes = [
         path: '/course-learn',
         component: () => import('@/views/course-learn'),
         name: 'CourseLearn',
-        hidden: true,
         meta: { title: '课程学习', sqlRouter: 'UserInfo', icon: 'course-learn', affix: true }
       },
       {
         path: '/course-learn-detail',
         component: () => import('@/views/course-learn/courseLearnDetail'),
         name: 'CourseLearn',
+        hidden: true,
         meta: { title: '课程学习', sqlRouter: 'UserInfo', icon: 'course-learn', affix: true }
       }
     ]
@@ -227,7 +227,7 @@ export const asyncRoutes = [
         path: '/template-manager',
         component: () => import('@/views/template-manager'),
         name: 'TemplateManager',
-        meta: { title: '模板管理', sqlRouter: 'Template', icon: 'jurisdiction-manager', affix: true }
+        meta: { title: '模板管理', sqlRouter: 'Template', icon: 'template', affix: true }
       }
     ]
   },
@@ -240,7 +240,7 @@ export const asyncRoutes = [
         path: '/virtual-machine-manager',
         component: () => import('@/views/virtual-machine-manager'),
         name: 'TemplateManager',
-        meta: { title: '虚拟机管理', sqlRouter: 'VMInfo', icon: 'jurisdiction-manager', affix: true }
+        meta: { title: '虚拟机管理', sqlRouter: 'VMInfo', icon: 'virtual', affix: true }
       }
     ]
   },

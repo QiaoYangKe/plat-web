@@ -5,7 +5,6 @@
         :inline="true"
         :model="queryForm"
         class="demo-form-inline"
-        size="small"
       >
         <el-form-item>
           <el-select
@@ -33,8 +32,8 @@
         element-loading-text="加载中"
         border
         fit
-        size="mini"
         highlight-current-row
+        :header-cell-style="{background: '#eeeeee'}"
       >
         <el-table-column align="center" label="课程编号" width="95">
           <template slot-scope="scope">
@@ -59,16 +58,15 @@
         <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
             <el-button
-              size="mini"
               type="text"
               @click="changeCourseState(scope.row)"
               :class="scope.row.isEnable ? 'delete-button' : ''"
               >{{ scope.row.isEnable ? "关闭课程" : "开放课程" }}</el-button
             >
-            <el-button size="mini" type="text" @click="editCourse(scope.row)"
+            <el-button type="text" @click="editCourse(scope.row)"
               >修改课程</el-button
             >
-            <el-button size="mini" type="text" @click="enterCourse(scope.row)"
+            <el-button type="text" @click="enterCourse(scope.row)"
               >进入课程</el-button
             >
             <!-- <el-button size="mini" type="text" @click="cloneCourse(scope.row)"
@@ -224,6 +222,7 @@ export default {
   },
   methods: {
     initClassList() {
+      // this.classList = []
       classInfoDic().then((res) => {
         this.classList = res.data;
       });
@@ -257,6 +256,9 @@ export default {
     //   })
     // },
     query() {
+        // this.list = [{},{}];
+        // this.total = 2;
+        // this.listLoading = false;
       courseList(this.queryForm).then((res) => {
         this.list = res.data;
         this.total = res.total;

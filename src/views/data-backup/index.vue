@@ -3,8 +3,8 @@
     <el-tab-pane label="备份" name="first">
       <el-container>
         <el-header>
-          <el-button size="small" type="primary">备份</el-button>
-          <el-button size="small" type="primary">备份整库</el-button>
+          <el-button type="primary">备份</el-button>
+          <el-button type="primary">备份整库</el-button>
         </el-header>
         <el-main>
           <el-table
@@ -13,7 +13,7 @@
             element-loading-text="加载中"
             border
             fit
-            size="mini"
+            :header-cell-style="{background: '#eeeeee'}"
             highlight-current-row
           >
             <el-table-column align="center" label="学号">
@@ -38,9 +38,9 @@
             </el-table-column>
             <el-table-column label="操作" width="200" align="center">
               <template slot-scope="scope">
-                <el-button size="mini" type="text" @click="handleClick(scope.row)">编辑</el-button>
-                <el-button size="mini" type="text" @click="handleClick(scope.row)" class="secret-button">重置密码</el-button>
-                <el-button size="mini" type="text" @click="handleClick(scope.row)" class="delete-button">删除</el-button>
+                <el-button type="text" @click="handleClick(scope.row)">编辑</el-button>
+                <el-button type="text" @click="handleClick(scope.row)" class="secret-button">重置密码</el-button>
+                <el-button type="text" @click="handleClick(scope.row)" class="delete-button">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -51,10 +51,10 @@
     <el-tab-pane label="还原" name="second">
       <el-container>
         <el-header height="auto">
-          <el-form :inline="true" :model="queryForm" class="demo-form-inline" size="small">
+          <el-form :inline="true" :model="queryForm" class="demo-form-inline">
             <el-form-item>
               <el-select v-model="queryForm.classNo" placeholder="请选择班级">
-                <el-option v-for="item in classList" :label="item.name" :value="item.id"></el-option>
+                <el-option v-for="item in classList" :label="item.name" :key="item.id" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -70,7 +70,7 @@
             element-loading-text="加载中"
             border
             fit
-            size="mini"
+            :header-cell-style="{background: '#eeeeee'}"
             highlight-current-row
           >
             <el-table-column align="center" label="学号">
@@ -108,10 +108,10 @@
     <el-tab-pane label="定时备份" name="third">
       <el-container>
         <el-header height="auto">
-          <el-form :inline="true" :model="queryForm" class="demo-form-inline" size="small">
+          <el-form :inline="true" :model="queryForm" class="demo-form-inline">
             <el-form-item>
               <el-select v-model="queryForm.classNo" placeholder="请选择班级">
-                <el-option v-for="item in classList" :label="item.name" :value="item.id"></el-option>
+                <el-option v-for="item in classList" :label="item.name" :key="item.id" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -133,7 +133,7 @@
             element-loading-text="加载中"
             border
             fit
-            size="mini"
+            :header-cell-style="{background: '#eeeeee'}"
             highlight-current-row
           >
             <el-table-column align="center" label="学号">
@@ -158,9 +158,9 @@
             </el-table-column>
             <el-table-column label="操作" width="200" align="center">
               <template slot-scope="scope">
-                <el-button size="mini" type="text" @click="handleClick(scope.row)">编辑</el-button>
-                <el-button size="mini" type="text" @click="handleClick(scope.row)" class="secret-button">重置密码</el-button>
-                <el-button size="mini" type="text" @click="handleClick(scope.row)" class="delete-button">删除</el-button>
+                <el-button type="text" @click="handleClick(scope.row)">编辑</el-button>
+                <el-button type="text" @click="handleClick(scope.row)" class="secret-button">重置密码</el-button>
+                <el-button type="text" @click="handleClick(scope.row)" class="delete-button">删除</el-button>
               </template>
             </el-table-column>
           </el-table>

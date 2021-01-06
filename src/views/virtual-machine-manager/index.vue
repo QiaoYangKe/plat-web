@@ -5,7 +5,6 @@
         :inline="true"
         :model="queryForm"
         class="demo-form-inline"
-        size="small"
       >
         <el-form-item>
           <el-select v-model="queryForm.classInfoId" placeholder="请选择班级">
@@ -41,7 +40,7 @@
         element-loading-text="加载中"
         border
         fit
-        size="small"
+        :header-cell-style="{background: '#eeeeee'}"
         tooltip-effect="light"
         highlight-current-row
       >
