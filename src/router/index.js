@@ -33,7 +33,27 @@ export const constantRoutes = [
         meta: { title: '首页', icon: 'home', affix: true  }
       }
     ]
-  }
+  },
+  {
+    path: '/course-learn',
+    component: Layout,
+    redirect: '/course-learn',
+    children: [
+      {
+        path: '/course-learn',
+        component: () => import('@/views/course-learn'),
+        name: 'CourseLearn',
+        meta: { title: '课程学习', sqlRouter: 'UserInfo', icon: 'course-learn', affix: true }
+      },
+      {
+        path: '/course-learn-detail',
+        component: () => import('@/views/course-learn/courseLearnDetail'),
+        name: 'CourseLearn',
+        hidden: true,
+        meta: { title: '课程学习', sqlRouter: 'UserInfo', icon: 'course-learn', affix: true }
+      }
+    ]
+  },
 ]
 
 /**

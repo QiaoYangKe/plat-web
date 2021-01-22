@@ -3,7 +3,7 @@
     <iframe
       v-for="(src, index) in srcs"
       :key="index"
-      :src="appConsts.serverUrl + src"
+      :src="appConsts.serverUrlWithSplit + src"
       frameborder="0"
       width="100%"
       height="1000px"

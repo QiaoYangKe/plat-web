@@ -52,7 +52,8 @@ export default {
           return (objMessage.uploaded || []).indexOf(chunk.offset + 1) >= 0
         },
         headers: {
-          Authorization: "Bearer " + store.getters.token
+          Authorization: "Bearer " + store.getters.token,
+          AccessControlAllowOrigin: "*"
         },
         panelShow: false,
       },

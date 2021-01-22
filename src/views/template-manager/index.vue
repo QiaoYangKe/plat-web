@@ -17,7 +17,7 @@
           </el-table-column>
           <el-table-column label="类型" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.vmType }}</span>
+              <span>{{ vmTypes[scope.row.vmType] }}</span>
             </template>
           </el-table-column>
           <el-table-column label="系统" align="center">
@@ -35,12 +35,12 @@
               <span>{{ scope.row.createTime | dateFormat }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center">
+          <!-- <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="clickSee(scope.row)">查看</el-button>
               <el-button type="text" size="small" @click="cloneTemplate(scope.row)">克隆</el-button>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
       <el-dialog
         title="提示"
@@ -70,6 +70,7 @@
 
 <script>
   import { templateList, cloneVm, cloneVmById, vmById, createVm } from '@/api/template-manager.js'
+  import { appConsts } from "@/appConsts"
 export default {
   name: 'TemplateManager',
   filters: {
@@ -92,6 +93,7 @@ export default {
     return {
       listLoading: true,
       dialogVisible: false,
+      vmTypes: appConsts.vmType,
       detailMessage: {},
       list: [],
       total: 0,

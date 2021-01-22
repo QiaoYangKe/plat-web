@@ -42,7 +42,7 @@ export function viewScoreInfo(groupId) {
 
 export function viewScoreInfoForPDF(data) {
   return request({
-    url: '/api/ScoreInfo/ViewScoreInfoForPDF',
+    url: '/api/Currency/WordToPDF',
     method: 'get',
     params: data
   })

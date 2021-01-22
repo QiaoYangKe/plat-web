@@ -11,7 +11,7 @@
       <el-tab-pane label="课程学习" name="first">
         <el-container>
           <el-aside width="auto">
-            <el-card :body-style="{ width: '351px', height: '821px' }">
+            <el-card :body-style="{ width: '351px', height: '850px' }">
               <div class="clear-fix">
                 <span class="span-class">操作手册</span>
               </div>
@@ -25,7 +25,7 @@
           </el-aside>
           <el-main class="leaning-main">
             <div class="left-two-card">
-              <el-card :body-style="{ width: '447px', height: '350px' }">
+              <el-card :body-style="{ width: '447px', height: '365px' }">
                 <div class="clear-fix">
                   <span class="span-class">视频</span>
                 </div>
@@ -38,7 +38,7 @@
                 ></video-player>
               </el-card>
               <div style="height: 20px"></div>
-              <el-card :body-style="{ width: '447px', height: '450px' }">
+              <el-card :body-style="{ width: '447px', height: '462px' }">
                 <div class="clear-fix">
                   <span class="span-class">上传实验报告</span>
                 </div>
@@ -71,8 +71,8 @@
                 </div>
               </el-card>
             </div>
-            <div>
-              <el-card :body-style="{ width: '800px' }">
+            <div class="iframe-video">
+              <el-card :body-style="{ width: '100%' }">
                 <div class="clear-fix">
                   <span class="span-class">虚拟机IP {{ guestIp }}</span>
                   <span>小组成员：</span>
@@ -80,9 +80,9 @@
                 </div>
                 <div class="content-class">
                   <iframe
-                    style="width: 100%; height: 760px"
+                    style="width: 100%; height: 780px"
                     allowfullscreen="true"
-                    src="http://10.10.0.1:8790/vnc.html?path=?token=pptp%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3_%E6%9C%8D%E5%8A%A1%E7%AB%AF_20201112090328_0"
+                    :src="vncUrl"
                   ></iframe>
                 </div>
               </el-card>
@@ -93,7 +93,7 @@
       <el-tab-pane label="课程练习" name="second">
         <el-container>
           <el-aside width="auto">
-            <el-card :body-style="{ width: '351px', height: '821px' }">
+            <el-card :body-style="{ width: '351px', height: '100%' }">
               <div class="clear-fix">
                 <span class="span-class">操作手册</span>
               </div>
@@ -105,9 +105,15 @@
             </el-card>
           </el-aside>
           <el-main>
-            <el-card :body-style="{ width: 'calc(100% - 600px)' }">
+            <el-card :body-style="{ width: 'calc(100% + 5px)', height: '100%' }">
+              <el-button @click="submitAnswer" size="mini" type="primary" style="float: right; margin-top: -10px" :disabled="answerVisible">提交</el-button>
               <div class="clear-fix">
                 <span class="span-class">课程练习</span>
+              </div>
+              <div class="train-box">
+                <el-row :gutter="2">
+                  <el-col  :sm="8" :md="8" :lg="8" :xl="8" v-for="(item,index) in trains"  :key="index" ><train :data="item" :index="index + 1" :answerVisible="answerVisible"></train></el-col>
+                </el-row>
               </div>
             </el-card>
           </el-main>
@@ -119,20 +125,25 @@
 
 <script>
 import videoImg from "@/assets/images/timg.jpg";
+import train from "@/components/CourseLearn/index"
 import { teamMember } from "@/api/user.js";
 import { addScoreInfo, uploadRport } from "@/api/lab-report";
 import { courseInfoById } from "@/api/course-info";
 import { appConsts } from "@/appConsts";
-import { GuestIP } from "@/api/vm-info";
+import { GuestIP, CloneVm } from "@/api/vm-info";
 export default {
   name: "CourseLearnDetail",
+  components: { train },
   data() {
     return {
       activeName: "first",
       teamMembers: [],
+      answerVisible: false,
+      trains: appConsts.staticData.trains,
       currentCourse: {},
       fileCount: 0,
       guestIp: "",
+      vncUrl: "",
       ruleForm: {
         lessonFile: [],
         courseInfoId: ""
@@ -177,12 +188,44 @@ export default {
     changeFiles(file, fileList) {
       this.fileCount = fileList.length;
     },
+    submitAnswer() {
+      let noAnswerCount = this.trains.filter(item => item.answer === "" || item.answer == null).length;
+      this.$confirm(noAnswerCount > 0? `还有${noAnswerCount}题目未作答`: '已经答完所有题目', '确认提交吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: noAnswerCount > 0? 'warning':'success',
+        callback: action => {
+          if (action === 'confirm') {
+            let loading = this.$loading({
+              text: '正在提交请稍后',
+              lock: true,
+              spinner: "el-icon-loading",
+              background: "rgba(0, 0, 0, 0.7)"
+            });
+            /** // TODO:请求提交接口 返回数据
+            submitAnswer(this.trains).then(res => {
+              this.answerVisible = true;
+              loading.close();
+              // TODO: 接口数据处理
+            }, () => {
+              loading.close();
+            });
+            */
+            this.answerVisible = true;
+            loading.close();
+          }
+          else {
+            console.log('按下 取消')
+          }
+        }
+      })
+    },
     changeCourse(val) {
       courseInfoById(val).then(res => {
         this.currentCourse = res.data;
         this.playerOptions.sources = [
           {
-            src: appConsts.serverUrl + this.currentCourse.videoPath,
+            src: appConsts.serverUrlWithSplit + this.currentCourse.videoPath,
             type: "video/mp4"
           }
         ];
@@ -223,8 +266,16 @@ export default {
       this.$refs.upload.submit();
     },
     teamMember() {
-      GuestIP().then(res => {
-        this.guestIp = res.data;
+      CloneVm().then(res => {
+        this.vncUrl = `${appConsts.vncUrl}${res.data[0].vmName}`;
+        console.log(this.vncUrl);
+        let arr = [];
+        res.data.forEach(e => {
+          arr.push(e.id);
+        });
+        GuestIP(arr.shift()).then(response => {
+          this.guestIp = response.data.vmip;
+        });
       });
       teamMember().then(res => {
         this.teamMembers = res.data;
@@ -241,6 +292,15 @@ export default {
   left: calc(100% - 100px);
   z-index: 999;
 }
+.train-box {
+  background-color: rgba($color: #000000, $alpha: 0.1);
+  padding: 5px;
+  min-width: 1000px;
+  .el-card {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+}
 .tab-style {
   padding: 0;
   height: 100%;
@@ -256,17 +316,26 @@ export default {
         background: white;
         padding: 5px 20px;
         margin-right: -10px;
-        height: 100%;
+        .el-card{
+          height: 100%;
+        }
       }
       .el-main {
-        padding: 5px 10px;
+        padding: 5px 5px;
         height: 100%;
       }
       .leaning-main {
         display: flex;
         flex-flow: row;
-        div {
+        .left-two-card {
+          display: flex;
+          flex-flow: column;
+          margin-right: 20px;
+        }
+        .iframe-video {
           margin-right: 10px;
+          width: calc(100% - 300px);
+          min-width: 500px;
         }
       }
     }
@@ -302,18 +371,5 @@ export default {
   .upload-demo {
     margin: 80px 30px -30px 30px;
   }
-  .link-type {
-    display: block;
-    width: 80%;
-    word-wrap: break-word;
-  }
-}
-.el-image {
-  width: 109px;
-  height: 131px;
-}
-.left-two-card {
-  display: flex;
-  flex-flow: column;
 }
 </style>

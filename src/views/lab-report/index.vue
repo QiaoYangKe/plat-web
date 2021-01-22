@@ -10,6 +10,7 @@
           <el-select
             clearable
             v-model="queryForm.classId"
+            multiple
             placeholder="请选择班级"
           >
             <el-option
@@ -24,6 +25,7 @@
           <el-select
             clearable
             v-model="queryForm.courseInfoId"
+            multiple
             placeholder="请选择课程"
           >
             <el-option

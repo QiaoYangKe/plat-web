@@ -2,7 +2,7 @@
   <el-container>
     <el-header height="auto">
       <el-form :inline="true" :model="queryForm" class="demo-form-inline">
-        <el-form-item>
+        <!-- <el-form-item>
           <el-select
             v-model="queryForm.classId"
             placeholder="请选择班级"
@@ -15,6 +15,9 @@
               :value="item.id"
             ></el-option>
           </el-select>
+        </el-form-item> -->
+        <el-form-item>
+          <el-input v-model="queryForm.name" placeholder="请输入名称" style="width: 400px"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="query">查询</el-button>
@@ -137,7 +140,7 @@ export default {
         pageSize: 10,
         classId: undefined,
         name: undefined,
-        studentNo: undefined
+        isActive: true
       }
     };
   },

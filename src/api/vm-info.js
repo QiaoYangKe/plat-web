@@ -2,23 +2,22 @@ import request from '@/utils/request'
 
 export function VMClone(data) {
   return request({
-    url: '/api/VMInfo/VMClone',
+    url: '/api/Template/VMClone',
     method: 'post',
     data
   })
 }
 
-export function GuestIP(data) {
+export function GuestIP(vmId) {
   return request({
-    url: '/api/VMInfo/GuestIP',
-    method: 'post',
-    data
+    url: `/api/Template/VmById/${vmId}`,
+    method: 'get'
   })
 }
 
 export function VMInfoByUser(data) {
   return request({
-    url: '/api/VMInfo/VMInfoByUser',
+    url: '/api/Template/VMlist',
     method: 'post',
     data
   })
@@ -26,14 +25,14 @@ export function VMInfoByUser(data) {
 
 export function VmById(vmId) {
   return request({
-    url: `/api/VMInfo/VmById/${vmId}`,
+    url: `/api/Template/VmById/${vmId}`,
     method: 'get'
   })
 }
 
 export function VMStart(data) {
   return request({
-    url: '/api/VMInfo/VMStart',
+    url: '/api/Template/VMStart',
     method: 'get',
     params: data
   })
@@ -41,16 +40,9 @@ export function VMStart(data) {
 
 export function VMStop(data) {
   return request({
-    url: '/api/VMInfo/VMStop',
+    url: '/api/Template/VMStop',
     method: 'get',
     params: data
-  })
-}
-
-export function VMDestroy(vMId) {
-  return request({
-    url: `/api/VMInfo/VMDestroy/${vMId}`,
-    method: 'get'
   })
 }
 
@@ -61,10 +53,11 @@ export function VMSuspend(vMId) {
   })
 }
 
-export function VMResum(vMId) {
+export function BatchStart(data) {
   return request({
-    url: `/api/VMInfo/VMResum/${vMId}`,
-    method: 'get'
+    url: '/api/Template/BatchStart',
+    method: 'get',
+    params: data
   })
 }
 
@@ -77,40 +70,29 @@ export function VMReboot(vMId) {
 
 export function VMRemove(vMId) {
   return request({
-    url: `/api/VMInfo/VMRemove/${vMId}`,
+    url: `/api/Template/VMRemove/${vMId}`,
     method: 'get'
   })
 }
 
 export function VMRebootHost() {
   return request({
-    url: '/api/VMInfo/VMRebootHost',
+    url: '/api/Template/VMRebootHost',
     method: 'get'
   })
 }
 
 export function VMRebootNet(data) {
   return request({
-    url: '/api/VMInfo/VMRebootNet',
+    url: '/api/Template/VMRebootNet',
     method: 'get',
     params: data
   })
 }
 
-export function VMStatusQuery(data) {
+export function CloneVm() {
   return request({
-    url: '/api/VMInfo/VMStatusQuery',
-    method: 'get',
-    params: data
+    url: '/api/VMInfo/CloneVm',
+    method: 'get'
   })
 }
-
-
-export function BindGroup(data) {
-  return request({
-    url: '/api/VMManage/BindGroup',
-    method: 'post',
-    data
-  })
-}
-

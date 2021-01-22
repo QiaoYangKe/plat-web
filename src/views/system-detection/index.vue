@@ -7,7 +7,7 @@
             <span>CPU使用率</span>
             <el-progress
               type="circle"
-              :percentage="systemData.cpu.percentage"
+              :percentage="Number.parseFloat(systemData.cpu.percent)"
             ></el-progress>
             <span>{{ systemData.cpu.text }}</span>
           </el-col>
@@ -15,15 +15,15 @@
             <span>内存使用率</span>
             <el-progress
               type="circle"
-              :percentage="systemData.ram.percentage"
+              :percentage="Number.parseFloat(systemData.ram.percent)"
             ></el-progress>
             <span>{{ systemData.ram.text }}</span>
           </el-col>
           <el-col :span="6">
-            <span>交换机使用率</span>
+            <span>可使用交换内存</span>
             <el-progress
               type="circle"
-              :percentage="systemData.switch.percentage"
+              :percentage="Number.parseFloat(systemData.switch.percent)"
             ></el-progress>
             <span>{{ systemData.switch.text }}</span>
           </el-col>
@@ -31,7 +31,7 @@
             <span>磁盘使用率</span>
             <el-progress
               type="circle"
-              :percentage="systemData.disk.percentage"
+              :percentage="Number.parseFloat(systemData.disk.percent)"
             ></el-progress>
             <span>{{ systemData.disk.text }}</span>
           </el-col>
@@ -58,85 +58,152 @@
 <script>
 import echarts from "echarts";
 import { getSystemData, getSystemEcharsData } from "@/api/system-info";
+import { appConsts } from "@/appConsts";
+import axios from "axios";
 export default {
   name: "SystemDetection",
   data() {
     return {
+      baseUrl: appConsts.echarsUrl,
+      timeWork: null,
       systemData: {
         cpu: {
-          percentage: 25,
-          text: "1核心",
+          percent: 0,
+          text: ""
         },
         ram: {
-          percentage: 18,
-          text: "1.4 GiB/1.9 GiB",
+          percent: 0,
+          text: ""
         },
         switch: {
-          percentage: 36,
-          text: "70.1 MiB/100 MiB",
+          percent: 0,
+          text: ""
         },
         disk: {
-          percentage: 65,
-          text: "11.3 GiB/48 GiB",
-        },
+          percent: 0,
+          text: ""
+        }
       },
       systemEcharsData: {
         cpu: {
-          xAxis: [
-            "11:57:37",
-            "11:57:40",
-            "11:57:43",
-            "11:57:47",
-            "11:57:50",
-            "11:57:53",
-            "11:57:57",
-          ],
-          yAxis: [820, 932, 901, 934, 1290, 1330, 1320],
+          xAxis: [],
+          yAxis: []
         },
         ram: {
-          xAxis: [
-            "11:57:37",
-            "11:57:40",
-            "11:57:43",
-            "11:57:47",
-            "11:57:50",
-            "11:57:53",
-            "11:57:57",
-          ],
-          yAxis: [820, 932, 901, 934, 1290, 1330, 1320],
-        },
-      },
+          xAxis: [],
+          yAxis: []
+        }
+      }
     };
   },
   methods: {
-    initData() {
-      getSystemData().then((res) => {
-        this.systemData = res.data;
+    async initData() {
+      const baseUrl = this.baseUrl;
+      const total = 60;
+      const cpuInfo = `${baseUrl}?chart=system.cpu&format=json&points=281&group=average&gtime=0&options=ms%7Cflip%7Cjsonwrap%7Cnonzero&after=-${total}`;
+      const ramInfo = `${baseUrl}?chart=system.ram&format=json&points=281&group=average&gtime=0&options=ms%7Cflip%7Cjsonwrap%7Cnonzero&after=-${total}`;
+      const diskInfo = `${baseUrl}?chart=disk_space._&format=json&points=281&group=average&gtime=0&options=ms%7Cflip%7Cjsonwrap%7Cnonzero`;
+      const swapInfo = `${baseUrl}?chart=system.swap&format=json&points=281&group=average&gtime=0&options=ms%7Cflip%7Cjsonwrap%7Cnonzero`;
+
+      let { data: cpuRes } = await axios(cpuInfo);
+      this.systemData.cpu.percent = cpuRes.view_latest_values
+        ?.reduce((sum, item) => sum + item)
+        .toFixed(2);
+      this.systemData.cpu.text = `${cpuRes.view_latest_values.length}核心`;
+      this.systemEcharsData.cpu.xAxis.splice(
+        0,
+        this.systemEcharsData.cpu.xAxis.length
+      );
+      this.systemEcharsData.cpu.yAxis.splice(
+        0,
+        this.systemEcharsData.cpu.yAxis.length
+      );
+      cpuRes.result?.data.forEach(([datetime, ...used]) => {
+        let date = new Date(datetime);
+        this.systemEcharsData.cpu.xAxis.push(
+          `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+        );
+        this.systemEcharsData.cpu.yAxis.push(
+          Math.round(used.reduce((sum, item) => sum + item)*100)/100
+        );
       });
-      getSystemEcharsData().then((res) => {
-        this.systemEcharsData = res.data;
+      let { data: ramRes } = await axios(ramInfo);
+      this.systemData.ram.percent = (
+        (ramRes.view_latest_values[1] /
+          ramRes.view_latest_values?.reduce((sum, item) => sum + item)) *
+        100
+      ).toFixed(2);
+      this.systemData.ram.text = `${(
+        ramRes.view_latest_values[1] / 1000
+      ).toFixed(2)}GB / ${(
+        ramRes.view_latest_values.reduce((sum, item) => sum + item) / 1000
+      ).toFixed(2)}GB`;
+      this.systemEcharsData.ram.xAxis.splice(
+        0,
+        this.systemEcharsData.ram.xAxis.length
+      );
+      this.systemEcharsData.ram.yAxis.splice(
+        0,
+        this.systemEcharsData.ram.yAxis.length
+      );
+      ramRes.result?.data.forEach(([datetime, ...used]) => {
+        let date = new Date(datetime);
+        this.systemEcharsData.ram.xAxis.push(
+          `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+        );
+        this.systemEcharsData.ram.yAxis.push(
+          Math.round(ramRes.view_latest_values[1] * 100 /
+            ramRes.view_latest_values?.reduce((sum, item) => sum + item)*100)/100
+        );
       });
+      let { data: diskRes } = await axios(diskInfo);
+      this.systemData.disk.percent = (
+        (diskRes.view_latest_values[1] /
+          diskRes.view_latest_values?.reduce((sum, item) => sum + item)) *
+        100
+      ).toFixed(2);
+      this.systemData.disk.text = `${diskRes.view_latest_values[1].toFixed(
+        2
+      )}GB / ${diskRes.view_latest_values
+        .reduce((sum, item) => sum + item)
+        .toFixed(2)}GB`;
+      let { data: swapRes } = await axios(swapInfo);
+      console.log(swapRes);
+      this.systemData.switch.percent = (
+        (swapRes.view_latest_values[0] /
+          swapRes.view_latest_values?.reduce((sum, item) => sum + item)) *
+        100
+      ).toFixed(2);
+      this.systemData.switch.text = `${swapRes.view_latest_values[0].toFixed(
+        2
+      )}GB / ${swapRes.view_latest_values
+        .reduce((sum, item) => sum + item)
+        .toFixed(2)}GB`;
+      this.initChart();
     },
     initChart() {
       const lineChar = echarts.init(document.getElementById("lineChar"));
       const shadowChar = echarts.init(document.getElementById("shadowChar"));
       const option = {
         tooltip: {
-          trigger: "axis",
+          trigger: "axis"
         },
         xAxis: {
           type: "category",
-          data: this.systemEcharsData.cpu.xAxis,
+          data: this.systemEcharsData.cpu.xAxis
         },
         yAxis: {
-          type: "value",
+          type: "value"
         },
+        color: "#2a82e4",
         series: [
           {
+            name: "数据",
             data: this.systemEcharsData.cpu.yAxis,
             type: "line",
-          },
-        ],
+            smooth: true
+          }
+        ]
       };
       const shadowCharOption = {
         color: ["#3398DB"],
@@ -144,49 +211,53 @@ export default {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow", // 默认为直线，可选为：'line' | 'shadow'
-          },
+            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+          }
         },
         grid: {
           left: "3%",
           right: "4%",
           bottom: "3%",
-          containLabel: true,
+          containLabel: true
         },
         xAxis: [
           {
             type: "category",
             data: this.systemEcharsData.ram.xAxis,
             axisTick: {
-              alignWithLabel: true,
-            },
-          },
+              alignWithLabel: true
+            }
+          }
         ],
         yAxis: [
           {
-            type: "value",
-          },
+            type: "value"
+          }
         ],
         series: [
           {
-            name: "直接访问",
+            name: "数据",
             type: "bar",
             barWidth: "60%",
-            data: this.systemEcharsData.ram.yAxis,
-          },
-        ],
+            data: this.systemEcharsData.ram.yAxis
+          }
+        ]
       };
       lineChar.setOption(option);
       shadowChar.setOption(shadowCharOption);
-    },
-  },
-  mounted() {
-    // this.initData();
-    this.initChart();
-    window.onresize = function () {
+      window.onresize = function() {
       this.initChart();
     };
+    }
   },
+  mounted() {
+    this.timeWork = setInterval(this.initData, 2000);
+  },
+  destroyed() {
+    if (this.timeWork) {
+      window.clearInterval(this.timeWork);
+    }
+  }
 };
 </script>
 

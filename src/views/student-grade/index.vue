@@ -7,6 +7,7 @@
             clearable
             v-model="queryForm.classId"
             placeholder="请选择班级"
+            multiple
           >
             <el-option
               v-for="item in classList"
@@ -21,6 +22,7 @@
             clearable
             v-model="queryForm.courseInfoId"
             placeholder="请选择课程"
+            multiple
           >
             <el-option
               v-for="item in courseList"
@@ -296,6 +298,7 @@ export default {
 <style lang='scss' scoped>
   .el-container {
     width: 100%;
+    height: 100%;
     .el-header {
       padding: 20px 35px 3px 10px;
       display: flex;
@@ -308,10 +311,11 @@ export default {
     }
     .el-main {
       width: 100%;
+      height: calc(100vh - 120px);
       padding: 10px 10px;
       display: flex;
       flex-flow: row;
-      .el-card {
+      .el-card:nth-of-type(2) {
         width: 40%;
       }
       .el-card:nth-of-type(1) {

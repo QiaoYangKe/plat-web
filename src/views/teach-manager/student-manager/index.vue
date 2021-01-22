@@ -96,9 +96,9 @@
           </el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="editUser(scope.row)">编辑</el-button>
-              <el-button size="mini" type="text" @click="reUser(scope.row)" class="secret-button">重置密码</el-button>
-              <el-button size="mini" type="text" @click="delUser(scope.row)" class="delete-button">删除</el-button>
+              <el-button type="text" @click="editUser(scope.row)">编辑</el-button>
+              <el-button type="text" @click="reUser(scope.row)" class="secret-button">重置密码</el-button>
+              <el-button type="text" @click="delUser(scope.row)" class="delete-button">删除</el-button>
             </template>
           </el-table-column>
         </el-table>

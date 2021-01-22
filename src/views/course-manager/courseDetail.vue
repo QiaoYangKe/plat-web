@@ -1,136 +1,152 @@
 <template>
-<div>
-    <el-button type="primary" @click="exitLesson" class="exit-button" size="small">退出课程</el-button>
-
-  <el-tabs v-model="activeName" @tab-click="handleClick" class="tab-style">
-    <el-tab-pane label="课程学习" name="first">
-      <el-container>
-        <el-aside width="auto">
-          <el-card :body-style="{ width: '351px', height: '821px' }">
-            <div class="clear-fix">
-              <span class="span-class">操作手册</span>
-            </div>
-
-            <span>
-              河南中盾云安信息科技有限公司（简称“中盾云安”）成立于2016年9月，是汉威科技（股票代码：300007）旗下智慧安全板块的重要成员企业，2019年度获评国家高新技术企业。中盾云安定位为区块链综合解决方案提供商，致力于依托区块链、电子签名、商用密码、5G、边缘计算等技术，打造数字经济、赋能产业发展。<br />
-
-              中盾云安是河南省首家区块链技术落地应用企业、中国区块链生态联盟区块链安全标准工作组成员单位、阿里巴巴“云合计划”的第一批合作伙伴、芝麻信用河南唯一合作伙伴、中原云统一认证服务平台重要支撑单位，曾多次参与区块链、云计算、大数据、智能制造、智慧城市等领域的课题研究、标准制订和方案论证，并承担国家教育部教育卡安全标准制订、工信部可信智能芯片、国家卫计委居民健康卡、国家工商局电子营业执照等应用的研究工作。
-            </span>
-          </el-card>
-        </el-aside>
-        <el-main class="leaning-main">
-          <div class="left-two-card">
-            <el-card :body-style="{ width: '447px', height: '350px' }">
+  <div>
+    <el-button
+      type="primary"
+      @click="exitLesson"
+      class="exit-button"
+      size="small"
+      >退出课程</el-button
+    >
+    <el-tabs v-model="activeName" @tab-click="handleClick" class="tab-style">
+      <el-tab-pane label="课程学习" name="first">
+        <el-container>
+          <el-aside width="auto">
+            <el-card :body-style="{ width: '351px', height: '850px' }">
               <div class="clear-fix">
-                <span class="span-class">视频</span>
+                <span class="span-class">操作手册</span>
               </div>
-              <video-player
-                class="video-player vjs-custom-skin"
-                style="margin-top: 40px"
-                ref="videoPlayer"
-                :playsinline="true"
-                :options="playerOptions"
-              ></video-player>
-            </el-card>
-            <div style="height: 20px"></div>
-            <el-card :body-style="{ width: '447px', height: '450px' }">
-              <div class="clear-fix">
-                <span class="span-class">上传实验报告</span>
-              </div>
-              <div class="content-class">
-                <el-upload
-                  ref="upload"
-                  class="upload-demo"
-                  drag
-                  action
-                  accept=".doc,.docx,.PDF"
-                  :auto-upload="false"
-                  :http-request="uploadReport"
-                  :on-change="changeFiles"
-                  multiple
-                  :limit="5"
-                  style="float: right"
-                >
-                  <i class="el-icon-upload"></i>
-                  <div class="el-upload__text">
-                    将文件拖到此处，或<em>点击上传服务器</em>
-                  </div>
-                </el-upload>
-                <el-button
-                  size="small"
-                  type="primary"
-                  @click="onSubmit"
-                  id="uploadButton"
-                  >确定上传</el-button
-                >
-              </div>
-            </el-card>
-          </div>
-          <div>
-            <el-card :body-style="{ width: '800px' }">
-              <div class="clear-fix">
-                <span class="span-class">虚拟机IP {{ guestIp }}</span>
-                <span>小组成员：</span>
-                <span>{{ teamMembers.map((v) => v.userName).join("，") }}</span>
-              </div>
-              <div class="content-class">
-                <iframe
-                  style="width: 100%; height: 760px"
-                  allowfullscreen="true"
-                  src="http://10.10.0.1:8790/vnc.html?path=?token=pptp%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3_%E6%9C%8D%E5%8A%A1%E7%AB%AF_20201112090328_0"
-                ></iframe>
-              </div>
-            </el-card>
-          </div>
-        </el-main>
-      </el-container>
-    </el-tab-pane>
-    <el-tab-pane label="课程练习" name="second">
-      <el-container>
-        <el-aside width="auto">
-          <el-card :body-style="{ width: '351px', height: '821px' }">
-            <div class="clear-fix">
-              <span class="span-class">操作手册</span>
-            </div>
-            <span>
-              河南中盾云安信息科技有限公司（简称“中盾云安”）成立于2016年9月，是汉威科技（股票代码：300007）旗下智慧安全板块的重要成员企业，2019年度获评国家高新技术企业。中盾云安定位为区块链综合解决方案提供商，致力于依托区块链、电子签名、商用密码、5G、边缘计算等技术，打造数字经济、赋能产业发展。<br />
 
-              中盾云安是河南省首家区块链技术落地应用企业、中国区块链生态联盟区块链安全标准工作组成员单位、阿里巴巴“云合计划”的第一批合作伙伴、芝麻信用河南唯一合作伙伴、中原云统一认证服务平台重要支撑单位，曾多次参与区块链、云计算、大数据、智能制造、智慧城市等领域的课题研究、标准制订和方案论证，并承担国家教育部教育卡安全标准制订、工信部可信智能芯片、国家卫计委居民健康卡、国家工商局电子营业执照等应用的研究工作。
-            </span>
-          </el-card>
-        </el-aside>
-        <el-main>
-          <el-card :body-style="{ width: 'calc(100% - 600px)' }">
-            <div class="clear-fix">
-              <span class="span-class">课程练习</span>
+              <span>
+                河南中盾云安信息科技有限公司（简称“中盾云安”）成立于2016年9月，是汉威科技（股票代码：300007）旗下智慧安全板块的重要成员企业，2019年度获评国家高新技术企业。中盾云安定位为区块链综合解决方案提供商，致力于依托区块链、电子签名、商用密码、5G、边缘计算等技术，打造数字经济、赋能产业发展。<br />
+
+                中盾云安是河南省首家区块链技术落地应用企业、中国区块链生态联盟区块链安全标准工作组成员单位、阿里巴巴“云合计划”的第一批合作伙伴、芝麻信用河南唯一合作伙伴、中原云统一认证服务平台重要支撑单位，曾多次参与区块链、云计算、大数据、智能制造、智慧城市等领域的课题研究、标准制订和方案论证，并承担国家教育部教育卡安全标准制订、工信部可信智能芯片、国家卫计委居民健康卡、国家工商局电子营业执照等应用的研究工作。
+              </span>
+            </el-card>
+          </el-aside>
+          <el-main class="leaning-main">
+            <div class="left-two-card">
+              <el-card :body-style="{ width: '447px', height: '365px' }">
+                <div class="clear-fix">
+                  <span class="span-class">视频</span>
+                </div>
+                <video-player
+                  class="video-player vjs-custom-skin"
+                  style="margin-top: 40px"
+                  ref="videoPlayer"
+                  :playsinline="true"
+                  :options="playerOptions"
+                ></video-player>
+              </el-card>
+              <div style="height: 20px"></div>
+              <el-card :body-style="{ width: '447px', height: '462px' }">
+                <div class="clear-fix">
+                  <span class="span-class">上传实验报告</span>
+                </div>
+                <div class="content-class">
+                  <el-upload
+                    ref="upload"
+                    class="upload-demo"
+                    drag
+                    action
+                    accept=".doc,.docx,.PDF"
+                    :auto-upload="false"
+                    :http-request="uploadReport"
+                    :on-change="changeFiles"
+                    multiple
+                    :limit="5"
+                    style="float: right"
+                  >
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">
+                      将文件拖到此处，或<em>点击上传服务器</em>
+                    </div>
+                  </el-upload>
+                  <el-button
+                    size="small"
+                    type="primary"
+                    @click="onSubmit"
+                    id="uploadButton"
+                    >确定上传</el-button
+                  >
+                </div>
+              </el-card>
             </div>
-          </el-card>
-        </el-main>
-      </el-container>
-    </el-tab-pane>
-  </el-tabs>
-</div>
+            <div class="iframe-video">
+              <el-card :body-style="{ width: '100%' }">
+                <div class="clear-fix">
+                  <span class="span-class">虚拟机IP {{ guestIp }}</span>
+                  <span>小组成员：</span>
+                  <span>{{ teamMembers.map(v => v.userName).join("，") }}</span>
+                </div>
+                <div class="content-class">
+                  <iframe
+                    style="width: 100%; height: 780px"
+                    allowfullscreen="true"
+                    :src="vncUrl"
+                  ></iframe>
+                </div>
+              </el-card>
+            </div>
+          </el-main>
+        </el-container>
+      </el-tab-pane>
+      <el-tab-pane label="课程练习" name="second">
+        <el-container>
+          <el-aside width="auto">
+            <el-card :body-style="{ width: '351px', height: '100%' }">
+              <div class="clear-fix">
+                <span class="span-class">操作手册</span>
+              </div>
+              <span>
+                河南中盾云安信息科技有限公司（简称“中盾云安”）成立于2016年9月，是汉威科技（股票代码：300007）旗下智慧安全板块的重要成员企业，2019年度获评国家高新技术企业。中盾云安定位为区块链综合解决方案提供商，致力于依托区块链、电子签名、商用密码、5G、边缘计算等技术，打造数字经济、赋能产业发展。<br />
+
+                中盾云安是河南省首家区块链技术落地应用企业、中国区块链生态联盟区块链安全标准工作组成员单位、阿里巴巴“云合计划”的第一批合作伙伴、芝麻信用河南唯一合作伙伴、中原云统一认证服务平台重要支撑单位，曾多次参与区块链、云计算、大数据、智能制造、智慧城市等领域的课题研究、标准制订和方案论证，并承担国家教育部教育卡安全标准制订、工信部可信智能芯片、国家卫计委居民健康卡、国家工商局电子营业执照等应用的研究工作。
+              </span>
+            </el-card>
+          </el-aside>
+          <el-main>
+            <el-card :body-style="{ width: 'calc(100% + 5px)', height: '100%' }">
+              <el-button @click="submitAnswer" size="mini" type="primary" style="float: right; margin-top: -10px" :disabled="answerVisible">提交</el-button>
+              <div class="clear-fix">
+                <span class="span-class">课程练习</span>
+              </div>
+              <div class="train-box">
+                <el-row :gutter="2">
+                  <el-col  :sm="8" :md="8" :lg="8" :xl="8" v-for="(item,index) in trains"  :key="index" ><train :data="item" :index="index + 1" :answerVisible="answerVisible"></train></el-col>
+                </el-row>
+              </div>
+            </el-card>
+          </el-main>
+        </el-container>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <script>
 import videoImg from "@/assets/images/timg.jpg";
+import train from "@/components/CourseLearn/index"
 import { teamMember } from "@/api/user.js";
 import { addScoreInfo, uploadRport } from "@/api/lab-report";
 import { courseInfoById } from "@/api/course-info";
 import { appConsts } from "@/appConsts";
-import { GuestIP } from "@/api/vm-info"
+import { GuestIP, CloneVm } from "@/api/vm-info";
 export default {
   name: "CourseDetail",
+  components: { train },
   data() {
     return {
       activeName: "first",
       teamMembers: [],
+      answerVisible: false,
+      trains: appConsts.staticData.trains,
       currentCourse: {},
       fileCount: 0,
-      guestIp: '',
+      guestIp: "",
+      vncUrl: "",
       ruleForm: {
         lessonFile: [],
-        courseInfoId: "",
+        courseInfoId: ""
       },
       playerOptions: {
         playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
@@ -149,9 +165,9 @@ export default {
           timeDivider: true,
           durationDisplay: true,
           remainingTimeDisplay: false,
-          fullscreenToggle: true, //全屏按钮
-        },
-      },
+          fullscreenToggle: true //全屏按钮
+        }
+      }
     };
   },
   mounted() {
@@ -159,11 +175,11 @@ export default {
     this.initCourse();
   },
   methods: {
-    exitLesson() {
-      this.$router.push("/course-manager");
-    },
     handleClick(tab, event) {
       console.log(tab, event);
+    },
+    exitLesson() {
+      this.$router.push("/course-manager");
     },
     initCourse() {
       this.ruleForm.courseInfoId = this.$route.query.id;
@@ -172,15 +188,46 @@ export default {
     changeFiles(file, fileList) {
       this.fileCount = fileList.length;
     },
+    submitAnswer() {
+      let noAnswerCount = this.trains.filter(item => item.answer === "" || item.answer == null).length;
+      this.$confirm(noAnswerCount > 0? `还有${noAnswerCount}题目未作答`: '已经答完所有题目', '确认提交吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: noAnswerCount > 0? 'warning':'success',
+        callback: action => {
+          if (action === 'confirm') {
+            let loading = this.$loading({
+              text: '正在提交请稍后',
+              lock: true,
+              spinner: "el-icon-loading",
+              background: "rgba(0, 0, 0, 0.7)"
+            });
+            /** // TODO:请求提交接口 返回数据
+            submitAnswer(this.trains).then(res => {
+              this.answerVisible = true;
+              loading.close();
+              // TODO: 接口数据处理
+            }, () => {
+              loading.close();
+            });
+            */
+            this.answerVisible = true;
+            loading.close();
+          }
+          else {
+            console.log('按下 取消')
+          }
+        }
+      })
+    },
     changeCourse(val) {
-      console.log(appConsts.serverUrl + this.currentCourse.videoPath)
-      courseInfoById(val).then((res) => {
+      courseInfoById(val).then(res => {
         this.currentCourse = res.data;
         this.playerOptions.sources = [
           {
-            src: appConsts.serverUrl + this.currentCourse.videoPath,
-            type: "video/mp4",
-          },
+            src: appConsts.serverUrlWithSplit + this.currentCourse.videoPath,
+            type: "video/mp4"
+          }
         ];
       });
     },
@@ -188,14 +235,14 @@ export default {
       if (this.ruleForm.lessonFile.length === 0) {
         this.$message({
           type: "warning",
-          message: "至少选择一个",
+          message: "至少选择一个"
         });
         return;
       }
-      addScoreInfo(this.ruleForm).then((res) => {
+      addScoreInfo(this.ruleForm).then(res => {
         this.$message({
           type: "success",
-          message: "上传成功",
+          message: "上传成功"
         });
         this.ruleForm.lessonFile = [];
         this.$refs.upload.clearFiles();
@@ -205,7 +252,7 @@ export default {
       console.log(file);
       let param = new FormData();
       param.append("files", file.file);
-      uploadRport(param).then((res) => {
+      uploadRport(param).then(res => {
         this.ruleForm.lessonFile.push(res.data);
         if (this.ruleForm.lessonFile.length === this.fileCount) {
           this.uploadSuccess();
@@ -219,23 +266,40 @@ export default {
       this.$refs.upload.submit();
     },
     teamMember() {
-      GuestIP().then(res => {
-        this.guestIp = res.data
-      })
-      teamMember().then((res) => {
+      CloneVm().then(res => {
+        this.vncUrl = `${appConsts.vncUrl}${res.data[0].vmName}`;
+        console.log(this.vncUrl);
+        let arr = [];
+        res.data.forEach(e => {
+          arr.push(e.id);
+        });
+        GuestIP(arr.shift()).then(response => {
+          this.guestIp = response.data.vmip;
+        });
+      });
+      teamMember().then(res => {
         this.teamMembers = res.data;
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .exit-button {
-    position: absolute;
-    top: 5px;
-    left: calc(100% - 100px);
-    z-index: 999;
+  position: absolute;
+  top: 5px;
+  left: calc(100% - 100px);
+  z-index: 999;
+}
+.train-box {
+  background-color: rgba($color: #000000, $alpha: 0.1);
+  padding: 5px;
+  min-width: 1000px;
+  .el-card {
+    width: 100%;
+    margin-bottom: 2px;
+  }
 }
 .tab-style {
   padding: 0;
@@ -252,17 +316,26 @@ export default {
         background: white;
         padding: 5px 20px;
         margin-right: -10px;
-        height: 100%;
+        .el-card{
+          height: 100%;
+        }
       }
       .el-main {
-        padding: 5px 10px;
+        padding: 5px 5px;
         height: 100%;
       }
       .leaning-main {
         display: flex;
         flex-flow: row;
-        div {
+        .left-two-card {
+          display: flex;
+          flex-flow: column;
+          margin-right: 20px;
+        }
+        .iframe-video {
           margin-right: 10px;
+          width: calc(100% - 300px);
+          min-width: 500px;
         }
       }
     }
@@ -298,18 +371,5 @@ export default {
   .upload-demo {
     margin: 80px 30px -30px 30px;
   }
-  .link-type {
-    display: block;
-    width: 80%;
-    word-wrap: break-word;
-  }
-}
-.el-image {
-  width: 109px;
-  height: 131px;
-}
-.left-two-card {
-  display: flex;
-  flex-flow: column;
 }
 </style>

@@ -8,6 +8,13 @@ export function templateList(params) {
   })
 }
 
+export function CloneSpeed(vmId) {
+  return request({
+    url: `/api/Template/CloneSpeed`,
+    method: 'get'
+  })
+}
+
 export function cloneVm() {
   return request({
     url: '/api/Template/CloneVm',

@@ -69,7 +69,7 @@
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
-            <el-button size="small" type="text" @click="handleClick(scope.row)"
+            <el-button type="text" @click="handleClick(scope.row)"
               ><i class="el-icon-s-promotion" />查看</el-button
             >
           </template>

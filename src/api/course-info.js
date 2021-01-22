@@ -28,7 +28,7 @@ export function videoUpload(data) {
   return request({
     url: '/api/CourseInfo/ChunkUpload',
     method: 'post',
-    headers: {'Content-Type':'multipart/form-data'},
+    headers: {'Content-Type':'multipart/form-data', 'Access-Control-Allow-Origin':'*'},
     data
   })
 }
