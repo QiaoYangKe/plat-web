@@ -35,7 +35,7 @@
         highlight-current-row
         :header-cell-style="{background: '#eeeeee'}"
       >
-        <el-table-column align="center" label="课程编号" width="95">
+        <el-table-column align="center" label="课程编号" width="120">
           <template slot-scope="scope">
             {{ scope.row.number }}
           </template>
@@ -69,70 +69,9 @@
             <el-button type="text" @click="enterCourse(scope.row)"
               >进入课程</el-button
             >
-            <!-- <el-button size="mini" type="text" @click="cloneCourse(scope.row)"
-              >克隆课程</el-button
-            > -->
           </template>
         </el-table-column>
       </el-table>
-      <!-- <el-dialog title="绑定小组" width="450px" :visible.sync="dialogFormVisible">
-        <el-form :model="form">
-          <el-form-item label="班级" :label-width="formLabelWidth">
-            <el-select
-              v-model="form.classId"
-              placeholder="请选择班级"
-              style="width: 300px"
-              @change="handelChange"
-            >
-              <el-option
-                v-for="item in courseClassList"
-                :key="item.id"
-                :label="item.className"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="小组名称" :label-width="formLabelWidth">
-            <el-select
-              v-model="form.groupName"
-              placeholder="请选择小组"
-              :loading="groupLoading"
-              style="width: 300px"
-            >
-              <el-option
-                v-for="item in groupList"
-                :key="item"
-                :label="item"
-                :value="item"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="虚拟机模板" :label-width="formLabelWidth">
-            <el-select
-              v-model="form.vmInfoIds"
-              placeholder="请选择班虚拟机模板"
-              multiple
-              style="width: 300px"
-              collapse-tags
-              clearable
-            >
-              <el-option
-                v-for="item in vmInfos"
-                :key="item.id"
-                :label="item.vmName"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer" style="padding-right: 20px">
-          <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
-          <el-button type="primary" @click="bindGroupSubmit" size="small"
-            >确 定</el-button
-          >
-        </div>
-      </el-dialog> -->
       <Pagination
         v-show="total > 0"
         :total="total"
@@ -148,17 +87,11 @@
 import Pagination from "@/components/Pagination/index.vue";
 import {
   courseList,
-  addCourse,
-  updateCourse,
-  updateVm,
-  deleteCourse,
   courseInfoById,
   updateCourseState,
   teamMenmberByClassDic,
 } from "@/api/course-info.js";
 import { classInfoDic } from "@/api/class-info.js";
-import { vmClone } from "@/api/template-manager.js";
-// import { BindGroup } from "@/api/vm-info"
 export default {
   name: "CourseManager",
   components: { Pagination },

@@ -76,7 +76,11 @@
                 <div class="clear-fix">
                   <span class="span-class">虚拟机IP {{ guestIp }}</span>
                   <span>小组成员：</span>
-                  <span>{{ teamMembers.map(v => v.userName).join("，") }}</span>
+                  <span>{{
+                    teamMembers.length === 0
+                      ? ""
+                      : teamMembers.map(v => v.userName).join("，")
+                  }}</span>
                 </div>
                 <div class="content-class">
                   <iframe
@@ -105,14 +109,35 @@
             </el-card>
           </el-aside>
           <el-main>
-            <el-card :body-style="{ width: 'calc(100% + 5px)', height: '100%' }">
-              <el-button @click="submitAnswer" size="mini" type="primary" style="float: right; margin-top: -10px" :disabled="answerVisible">提交</el-button>
+            <el-card
+              :body-style="{ width: 'calc(100% + 5px)', height: '100%' }"
+            >
+              <el-button
+                @click="submitAnswer"
+                size="mini"
+                type="primary"
+                style="float: right; margin-top: -10px"
+                :disabled="answerVisible"
+                >提交</el-button
+              >
               <div class="clear-fix">
                 <span class="span-class">课程练习</span>
               </div>
               <div class="train-box">
                 <el-row :gutter="2">
-                  <el-col  :sm="8" :md="8" :lg="8" :xl="8" v-for="(item,index) in trains"  :key="index" ><train :data="item" :index="index + 1" :answerVisible="answerVisible"></train></el-col>
+                  <el-col
+                    :sm="8"
+                    :md="8"
+                    :lg="8"
+                    :xl="8"
+                    v-for="(item, index) in trains"
+                    :key="index"
+                    ><train
+                      :data="item"
+                      :index="index + 1"
+                      :answerVisible="answerVisible"
+                    ></train
+                  ></el-col>
                 </el-row>
               </div>
             </el-card>
@@ -125,12 +150,13 @@
 
 <script>
 import videoImg from "@/assets/images/timg.jpg";
-import train from "@/components/CourseLearn/index"
+import train from "@/components/CourseLearn/index";
 import { teamMember } from "@/api/user.js";
 import { addScoreInfo, uploadRport } from "@/api/lab-report";
 import { courseInfoById } from "@/api/course-info";
 import { appConsts } from "@/appConsts";
-import { GuestIP, CloneVm } from "@/api/vm-info";
+import { VmById, CloneVm } from "@/api/vm-info";
+import { randomExercises, computeScore } from "@/api/exercise";
 export default {
   name: "CourseDetail",
   components: { train },
@@ -139,11 +165,12 @@ export default {
       activeName: "first",
       teamMembers: [],
       answerVisible: false,
-      trains: appConsts.staticData.trains,
+      trains: [],
       currentCourse: {},
       fileCount: 0,
       guestIp: "",
-      vncUrl: "",
+      score: 0,
+      vncUrl: appConsts.vncUrl,
       ruleForm: {
         lessonFile: [],
         courseInfoId: ""
@@ -176,49 +203,86 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
+      if (tab.name === "second" && this.trains.length === 0) {
+        this.initTrains();
+      }
     },
     exitLesson() {
       this.$router.push("/course-manager");
     },
     initCourse() {
       this.ruleForm.courseInfoId = this.$route.query.id;
-      this.changeCourse(this.$route.query.id);
+      this.changeCourse(this.ruleForm.courseInfoId);
+    },
+    async initTrains() {
+      await randomExercises({ courseInfoId: this.ruleForm.courseInfoId }).then(
+        res => {
+          let result = res.data;
+          result.forEach(item => {
+            item.answer = "";
+            item.result = "";
+          });
+          this.$set(this, "trains", result);
+        }
+      );
     },
     changeFiles(file, fileList) {
       this.fileCount = fileList.length;
     },
     submitAnswer() {
-      let noAnswerCount = this.trains.filter(item => item.answer === "" || item.answer == null).length;
-      this.$confirm(noAnswerCount > 0? `还有${noAnswerCount}题目未作答`: '已经答完所有题目', '确认提交吗？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: noAnswerCount > 0? 'warning':'success',
-        callback: action => {
-          if (action === 'confirm') {
-            let loading = this.$loading({
-              text: '正在提交请稍后',
-              lock: true,
-              spinner: "el-icon-loading",
-              background: "rgba(0, 0, 0, 0.7)"
-            });
-            /** // TODO:请求提交接口 返回数据
-            submitAnswer(this.trains).then(res => {
-              this.answerVisible = true;
-              loading.close();
-              // TODO: 接口数据处理
-            }, () => {
-              loading.close();
-            });
-            */
-            this.answerVisible = true;
-            loading.close();
-          }
-          else {
-            console.log('按下 取消')
+      let noAnswerCount = this.trains.filter(
+        item => item.answer === "" || item.answer == null
+      ).length;
+      this.$confirm(
+        noAnswerCount > 0
+          ? `还有${noAnswerCount}题目未作答`
+          : "已经答完所有题目",
+        "确认提交吗？",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: noAnswerCount > 0 ? "warning" : "success",
+          callback: action => {
+            if (action === "confirm") {
+              let loading = this.$loading({
+                text: "正在提交请稍后",
+                lock: true,
+                spinner: "el-icon-loading",
+                background: "rgba(0, 0, 0, 0.7)"
+              });
+              let data = {
+                courseInfoId: this.ruleForm.courseInfoId,
+                list: []
+              };
+              this.trains.forEach(item => {
+                data.list.push({
+                  exercisesId: item.id,
+                  exercisesOptionId: item.answer,
+                  isTrue: true
+                });
+              });
+              computeScore(data).then(
+                res => {
+                  this.score = res.score;
+                  res.data.list.forEach(item => {
+                    this.$set(this.trains.find(it => it.id === item.exercisesId), 'result',item.exercisesOptionId);
+                  });
+                  console.log(this.trains);
+                  this.answerVisible = true;
+                  loading.close();
+                },
+                () => {
+                  this.$message({
+                    message: "提交失败",
+                    type: "error"
+                  });
+                  loading.close();
+                }
+              );
+            }
           }
         }
-      })
+      );
     },
     changeCourse(val) {
       courseInfoById(val).then(res => {
@@ -267,15 +331,22 @@ export default {
     },
     teamMember() {
       CloneVm().then(res => {
-        this.vncUrl = `${appConsts.vncUrl}${res.data[0].vmName}`;
-        console.log(this.vncUrl);
-        let arr = [];
-        res.data.forEach(e => {
-          arr.push(e.id);
-        });
-        GuestIP(arr.shift()).then(response => {
-          this.guestIp = response.data.vmip;
-        });
+        if (res.data[0] != null) {
+          this.vncUrl = `${appConsts.vncUrl}${res.data[0].vmName}`;
+          let arr = [];
+          res.data.forEach(e => {
+            arr.push(e.id);
+          });
+          VmById(arr.shift()).then(response => {
+            this.guestIp = response.data.vmip;
+          });
+        } else {
+          this.vncUrl = `${appConsts.vncUrl}`;
+          this.$message({
+            message: "没有分配虚拟机",
+            type: "warning"
+          });
+        }
       });
       teamMember().then(res => {
         this.teamMembers = res.data;
@@ -316,7 +387,7 @@ export default {
         background: white;
         padding: 5px 20px;
         margin-right: -10px;
-        .el-card{
+        .el-card {
           height: 100%;
         }
       }

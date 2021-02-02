@@ -8,7 +8,7 @@ export function VMClone(data) {
   })
 }
 
-export function GuestIP(vmId) {
+export function VmById(vmId) {
   return request({
     url: `/api/Template/VmById/${vmId}`,
     method: 'get'
@@ -20,13 +20,6 @@ export function VMInfoByUser(data) {
     url: '/api/Template/VMlist',
     method: 'post',
     data
-  })
-}
-
-export function VmById(vmId) {
-  return request({
-    url: `/api/Template/VmById/${vmId}`,
-    method: 'get'
   })
 }
 

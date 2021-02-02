@@ -6,28 +6,28 @@
     <el-radio-group v-model="data.answer">
       <el-radio
         :key="item.id"
-        v-for="(item, index) in data.chooses"
+        v-for="(item, index) in data.exercisesOptionList"
         :disabled="answerVisible"
         :label="item.id"
-      >{{ String.fromCharCode(65 + index) + '.' + item.tag }}</el-radio>
+      >{{ String.fromCharCode(65 + index) + '.' + item.content }}</el-radio>
     </el-radio-group>
     <div class="card_answer" v-if="answerVisible">
       <el-row :gutter="10">
         <el-col :sm="12">
           <span style="line-height: 36px; margin-left: 15px;">
-              答案: <span :style="{ color: data.answer!=='' && data.result === data.answer? 'green': 'red'}">{{ String.fromCharCode(data.chooses.map(item => item.id).indexOf(data.result) + 65) }}</span>
+              答案: <span :style="{ color: data.answer!=='' && data.result === data.answer? 'green': 'red'}">{{ String.fromCharCode(data.exercisesOptionList.map(item => item.id).indexOf(data.result) + 65) }}</span>
          </span>
         </el-col>
         <el-col :sm="12">
               <el-popover
                 placement="bottom"
-                width="400"
+                width="380"
                 :offset="-30"
                 transition="fade-in-linear"
                 trigger="click">
                 <div>
                     <span>
-                        {{ data.resultDetial }}
+                        {{ data.analysis == null ? '暂无解析': data.analysis }}
                     </span>
                 </div>
                 <el-button type="text" slot="reference">查看解析</el-button>

@@ -44,14 +44,14 @@
       </el-form>
     </el-header>
     <el-main>
-      <el-card :body-style="{width: '100%', height: '100%'}">
+      <el-card :body-style="{ width: '100%', height: '100%' }">
         <el-table
           v-loading="listLoading"
           :data="list"
           element-loading-text="加载中"
           border
           fit
-          :header-cell-style="{background: '#eeeeee'}"
+          :header-cell-style="{ background: '#eeeeee' }"
           tooltip-effect="light"
           highlight-current-row
         >
@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column label="姓名">
             <template slot-scope="scope">
-              {{ scope.row.userInfoName }}
+              {{ scope.row.userName }}
             </template>
           </el-table-column>
           <el-table-column label="班级" align="center">
@@ -72,7 +72,7 @@
           </el-table-column>
           <el-table-column label="课程名称" align="left" show-overflow-tooltip>
             <template slot-scope="scope">
-              <span>{{ scope.row.courseName }}</span>
+              <span>{{ scope.row.className }}</span>
             </template>
           </el-table-column>
           <el-table-column label="分数" align="left">
@@ -81,16 +81,28 @@
             </template>
           </el-table-column>
         </el-table>
-        <Pagination v-show="total>0" :total="total" :page.sync="queryForm.pageIndex" :limit.sync="queryForm.pageSize" @pagination="query" />
+        <Pagination
+          v-show="total > 0"
+          :total="total"
+          :page.sync="queryForm.pageIndex"
+          :limit.sync="queryForm.pageSize"
+          @pagination="query"
+        />
       </el-card>
-      <el-card :body-style="{width: '100%', height: '100%'}">
+      <el-card :body-style="{ width: '100%', height: '100%' }">
         <div class="clear-fix">
           <span class="span-class">成绩统计</span>
         </div>
         <div class="content-class">
           <div id="demo" style="width: 300px;height: 300px; float: left"></div>
-          <div id="demoRight" style="width: 300px;height: 300px; float: left"></div>
-          <div id="demoBottom" style="width: 600px;height: 350px; float: left"></div>
+          <div
+            id="demoRight"
+            style="width: 300px;height: 300px; float: left"
+          ></div>
+          <div
+            id="demoBottom"
+            style="width: 600px;height: 350px; float: left"
+          ></div>
         </div>
       </el-card>
     </el-main>
@@ -98,13 +110,16 @@
 </template>
 
 <script>
-  import Pagination from '@/components/Pagination/index.vue'
-  import echarts from 'echarts'
-  import { scoreInfoList, scoreEcharts } from '@/api/lab-report.js'
-  import { classInfoDic } from "@/api/class-info.js";
-  import { lessonList } from "@/api/feed-back";
+import Pagination from "@/components/Pagination/index.vue";
+import echarts from "echarts";
+import {
+  studentScore as scoreInfoList,
+  statistics as scoreEcharts
+} from "@/api/student-score";
+import { classInfoDic } from "@/api/class-info.js";
+import { lessonList } from "@/api/feed-back";
 export default {
-  name: 'StudentGrade',
+  name: "StudentGrade",
   components: { Pagination },
   data() {
     return {
@@ -119,65 +134,59 @@ export default {
         pageSize: 10,
         classId: undefined,
         userName: undefined,
-        courseInfoId: undefined,
-      },
-    }
+        courseInfoId: undefined
+      }
+    };
   },
   mounted() {
-    this.query()
-    this.initClassList()
-    this.initCourse()
-    this.initChars()
-    window.onresize = function(){
-      this.initChars()
-    }
+    this.query();
+    this.initClassList();
+    this.initCourse();
+    this.initChars();
+    window.onresize = function() {
+      this.initChars();
+    };
   },
   methods: {
-    initChars() {
-      // scoreEcharts().then(res => {
-      //   this.echartsObj = res.data
-      // })
-      const myChart = echarts.init(document.getElementById('demo'))
-      const myChartRight = echarts.init(document.getElementById('demoRight'))
-      const myChartBottom = echarts.init(document.getElementById('demoBottom'))
+    async initChars() {
+      await scoreEcharts({}).then(res => {
+        this.echartsObj = res.data
+      })
+      const myChart = echarts.init(document.getElementById("demo"));
+      const myChartRight = echarts.init(document.getElementById("demoRight"));
+      const myChartBottom = echarts.init(document.getElementById("demoBottom"));
 
       // 指定图表的配置项和数据
       const option = {
         title: {
-          text: '班级最新阶段分数统计',
-          left: 'center',
+          text: "班级最新阶段分数统计",
+          left: "center"
         },
         tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
-        color: ['#a2baf6', '#6b9ddb', '#3c90f7', '#24335a'],
+        color: ["#a2baf6", "#6b9ddb", "#3c90f7", "#24335a"],
         series: [
           {
-            name: '占比',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            label:{
-               position:'inside',
-               formatter: '{b} \n{d}%'
+            name: "占比",
+            type: "pie",
+            radius: "55%",
+            center: ["50%", "60%"],
+            label: {
+              position: "inside",
+              formatter: "{b} \n{d}%"
             },
-            data: [
-              {value: 0.2, name: '60-80'},
-              {value: 0.4, name: '80-90'},
-              {value: 0.3, name: '>90'},
-              {value: 0.1, name: '<60'}
-            ],
-            // data: this.echartsObj.lastStage,
+            data: this.echartsObj.lastStage,
             emphasis: {
               label: {
-                fontSize: '14',
-                fontWeight: 'light'
+                fontSize: "14",
+                fontWeight: "light"
               },
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                shadowColor: "rgba(0, 0, 0, 0.5)"
               }
             }
           }
@@ -186,40 +195,40 @@ export default {
       // 指定图表的配置项和数据
       const optionRight = {
         title: {
-          text: '班级全阶段分数统计',
-          left: 'center',
+          text: "班级全阶段分数统计",
+          left: "center"
         },
         tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
-        color: ['#a2baf6', '#6b9ddb', '#3c90f7', '#24335a'],
+        color: ["#a2baf6", "#6b9ddb", "#3c90f7", "#24335a"],
         series: [
           {
-            name: '占比',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            label:{
-               position:'inside',
-               formatter: '{b} \n{d}%'
+            name: "占比",
+            type: "pie",
+            radius: "55%",
+            center: ["50%", "60%"],
+            label: {
+              position: "inside",
+              formatter: "{b} \n{d}%"
             },
             data: [
-              {value: 0.2, name: '60-80'},
-              {value: 0.4, name: '80-90'},
-              {value: 0.3, name: '>90'},
-              {value: 0.1, name: '<60'}
+              { value: 0.2, name: "60-80" },
+              { value: 0.4, name: "80-90" },
+              { value: 0.3, name: ">90" },
+              { value: 0.1, name: "<60" }
             ],
             // data: this.echartsObj.allStage,
             emphasis: {
               label: {
-                fontSize: '14',
-                fontWeight: 'light'
+                fontSize: "14",
+                fontWeight: "light"
               },
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                shadowColor: "rgba(0, 0, 0, 0.5)"
               }
             }
           }
@@ -228,36 +237,43 @@ export default {
       // 指定图表的配置项和数据
       const optionBottom = {
         title: {
-          text: '所有班级分数统计',
-          left: 'center'
+          text: "所有班级分数统计",
+          left: "center"
         },
         tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
+          trigger: "item",
+          formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
-        color: ['#3c90f7', '#55bfc0', '#034d9b', '##5ebe67', '#517ba9', '#229991'],
+        color: [
+          "#3c90f7",
+          "#55bfc0",
+          "#034d9b",
+          "##5ebe67",
+          "#517ba9",
+          "#229991"
+        ],
         series: [
           {
-            name: '占比',
-            type: 'pie',
-            radius: ['50%', '70%'],
+            name: "占比",
+            type: "pie",
+            radius: ["50%", "70%"],
             label: {
-              formatter: '{b} \n{d}%'
+              formatter: "{b} \n{d}%"
             },
             emphasis: {
               label: {
-                fontSize: '14',
-                fontWeight: 'light'
+                fontSize: "14",
+                fontWeight: "light"
               }
             },
             data: [
-              {value: 0.1, name: '60-70'},
-              {value: 0.2, name: '80-90'},
-              {value: 0.1, name: '70-80'},
-              {value: 0.3, name: '90-99'},
-              {value: 0.2, name: '0-60'},
-              {value: 0.1, name: '100'}
-            ],
+              { value: 0.1, name: "60-70" },
+              { value: 0.2, name: "80-90" },
+              { value: 0.1, name: "70-80" },
+              { value: 0.3, name: "90-99" },
+              { value: 0.2, name: "0-60" },
+              { value: 0.1, name: "100" }
+            ]
             // data: this.echartsObj.allClassStatistics
           }
         ]
@@ -269,73 +285,73 @@ export default {
       myChartBottom.setOption(optionBottom);
     },
     initCourse() {
-      lessonList().then((res) => {
+      lessonList().then(res => {
         this.courseList = res.data;
       });
     },
     initClassList() {
-      classInfoDic().then((res) => {
+      classInfoDic().then(res => {
         this.classList = res.data;
       });
     },
     query() {
-      scoreInfoList(this.queryForm).then((res) => {
+      scoreInfoList(this.queryForm).then(res => {
         this.list = res.data;
         this.total = res.total;
         this.listLoading = false;
       });
     },
     addClick() {
-      alert('新增')
+      alert("新增");
     },
     handleClick(row) {
-      alert('查看')
+      alert("查看");
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.el-container {
+  width: 100%;
+  height: 100%;
+  .el-header {
+    padding: 20px 35px 3px 10px;
+    display: flex;
+    flex-flow: row;
+    .demo-form-inline {
+      .el-form-item {
+        margin-bottom: 0;
+      }
+    }
+  }
+  .el-main {
+    width: 100%;
+    height: calc(100vh - 120px);
+    padding: 10px 10px;
+    display: flex;
+    flex-flow: row;
+    .el-card:nth-of-type(2) {
+      width: 40%;
+    }
+    .el-card:nth-of-type(1) {
+      margin-right: 20px;
+      width: 60%;
     }
   }
 }
-</script>
-
-<style lang='scss' scoped>
-  .el-container {
-    width: 100%;
-    height: 100%;
-    .el-header {
-      padding: 20px 35px 3px 10px;
-      display: flex;
-      flex-flow: row;
-      .demo-form-inline {
-        .el-form-item {
-          margin-bottom: 0;
-        }
-      }
-    }
-    .el-main {
-      width: 100%;
-      height: calc(100vh - 120px);
-      padding: 10px 10px;
-      display: flex;
-      flex-flow: row;
-      .el-card:nth-of-type(2) {
-        width: 40%;
-      }
-      .el-card:nth-of-type(1) {
-        margin-right: 20px;
-        width: 60%;
-      }
-    }
+.clear-fix {
+  margin: -10px 0 20px -10px;
+  .span-class {
+    display: flex;
+    line-height: 16px;
   }
-  .clear-fix{
-    margin: -10px 0 20px -10px;
-    .span-class {
-      display: flex;
-      line-height: 16px;
-    }
-    .span-class::before {
-      content: '';
-      display: inline-block;
-      width: 4px;
-      background: #0a76a4;
-      margin-right: 4px;
-    }
+  .span-class::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    background: #0a76a4;
+    margin-right: 4px;
   }
+}
 </style>

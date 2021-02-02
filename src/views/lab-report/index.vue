@@ -78,6 +78,11 @@
             <span>{{ scope.row.courseName }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="日期" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.createTime }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button size="mini" type="text" @click="handleClick(scope.row)"

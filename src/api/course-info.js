@@ -42,9 +42,9 @@ export function uploadInstructions(data) {
   })
 }
 
-export function uploadTopics(data) {
+export function uploadTrains(data) {
   return request({
-    url: '/api/CourseInfo/UploadFile',
+    url: '/api/Exercises/UploadFile',
     method: 'post',
     headers: {'Content-Type':'multipart/form-data'},
     data

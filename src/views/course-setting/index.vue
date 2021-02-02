@@ -146,7 +146,7 @@
                 class="upload-demo"
                 action
                 :auto-upload="true"
-                :http-request="uploadTopic"
+                :http-request="uploadTrain"
                 :limit="1"
                 style="float: right"
               >
@@ -164,20 +164,13 @@
 
 <script>
 import {
-  courseList,
   addCourse,
   updateCourse,
-  updateVm,
-  deleteCourse,
   courseInfoById,
-  updateCourseState,
-  videoUpload,
   uploadInstructions,
-  uploadTopics
+  uploadTrains
 } from "@/api/course-info.js";
-// import { cloneVm } from '@/api/template-manager.js'
 import { classInfoDic } from "@/api/class-info.js";
-import { uploadUserInfo } from "@/api/user.js";
 import videoImg from "@/assets/images/timg.jpg";
 import { appConsts } from "@/appConsts.js";
 import uploader from "@/components/Uploader"
@@ -196,8 +189,7 @@ export default {
         videoPath: "",
         instructionsPath: undefined,
         topicPath: undefined,
-        urlExplain: undefined,
-        // vmInfoIdList: [],
+        urlExplain: undefined
       },
       // templates: [],
       playerOptions: {
@@ -245,15 +237,9 @@ export default {
   },
   mounted() {
     this.initClassList()
-    // this.initTemplateList()
     this.initCourse()
   },
   methods: {
-    // initTemplateList() {
-    //   cloneVm().then(res => {
-    //     this.templates = res.data
-    //   })
-    // },
     getData(val) {
       console.log("getData方法", val)
       this.ruleForm.videoPath = val
@@ -329,11 +315,10 @@ export default {
       });
     },
 
-    uploadTopic(file) {
+    uploadTrain(file) {
       let param = new FormData();
       param.append("files", file.file);
-      console.log(2,param.get("files"))
-      uploadTopics(param).then((res) => {
+      uploadTrains(param).then((res) => {
         this.ruleForm.topicPath = res.data;
       });
     },

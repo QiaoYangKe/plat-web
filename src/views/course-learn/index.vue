@@ -34,7 +34,7 @@
         :header-cell-style="{ background: '#eeeeee' }"
         highlight-current-row
       >
-        <el-table-column align="center" label="课程编号" width="95">
+        <el-table-column align="center" label="课程编号" width="120">
           <template slot-scope="scope">
             {{ scope.row.number }}
           </template>
@@ -77,10 +77,6 @@
 import Pagination from "@/components/Pagination/index.vue";
 import {
   courseList,
-  addCourse,
-  updateCourse,
-  updateVm,
-  deleteCourse,
   courseInfoById,
   updateCourseState,
   teamMenmberByClassDic

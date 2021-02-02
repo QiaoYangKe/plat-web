@@ -57,7 +57,6 @@
 
 <script>
 import echarts from "echarts";
-import { getSystemData, getSystemEcharsData } from "@/api/system-info";
 import { appConsts } from "@/appConsts";
 import axios from "axios";
 export default {
@@ -99,7 +98,7 @@ export default {
   methods: {
     async initData() {
       const baseUrl = this.baseUrl;
-      const total = 60;
+      const total = 30;
       const cpuInfo = `${baseUrl}?chart=system.cpu&format=json&points=281&group=average&gtime=0&options=ms%7Cflip%7Cjsonwrap%7Cnonzero&after=-${total}`;
       const ramInfo = `${baseUrl}?chart=system.ram&format=json&points=281&group=average&gtime=0&options=ms%7Cflip%7Cjsonwrap%7Cnonzero&after=-${total}`;
       const diskInfo = `${baseUrl}?chart=disk_space._&format=json&points=281&group=average&gtime=0&options=ms%7Cflip%7Cjsonwrap%7Cnonzero`;
@@ -121,7 +120,7 @@ export default {
       cpuRes.result?.data.forEach(([datetime, ...used]) => {
         let date = new Date(datetime);
         this.systemEcharsData.cpu.xAxis.push(
-          `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+          `${date.getHours() > 10? date.getHours() : `0`+ date.getHours()}:${date.getMinutes() > 10? date.getMinutes(): `0`+date.getMinutes()}:${date.getSeconds() > 10? date.getSeconds() : `0`+date.getSeconds()}`
         );
         this.systemEcharsData.cpu.yAxis.push(
           Math.round(used.reduce((sum, item) => sum + item)*100)/100
@@ -149,7 +148,7 @@ export default {
       ramRes.result?.data.forEach(([datetime, ...used]) => {
         let date = new Date(datetime);
         this.systemEcharsData.ram.xAxis.push(
-          `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+          `${date.getHours() > 10? date.getHours() : `0`+ date.getHours()}:${date.getMinutes() > 10? date.getMinutes(): `0`+date.getMinutes()}:${date.getSeconds() > 10? date.getSeconds() : `0`+date.getSeconds()}`
         );
         this.systemEcharsData.ram.yAxis.push(
           Math.round(ramRes.view_latest_values[1] * 100 /
@@ -211,7 +210,7 @@ export default {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            type: "category" // 默认为直线，可选为：'line' | 'shadow'
           }
         },
         grid: {
@@ -237,9 +236,10 @@ export default {
         series: [
           {
             name: "数据",
-            type: "bar",
+            type: "line",
             barWidth: "60%",
-            data: this.systemEcharsData.ram.yAxis
+            data: this.systemEcharsData.ram.yAxis,
+            smooth: true
           }
         ]
       };

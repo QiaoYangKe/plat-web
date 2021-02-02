@@ -316,9 +316,10 @@ export default {
             spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.7)"
           });
-          if (this.form.type === 0) {
+          try {
+            if (this.form.type === 0) {
             VMClone(this.form).then(
-              res => {
+              () => {
                 this.loadPercent();
               },
               () => {
@@ -331,7 +332,7 @@ export default {
             );
           } else {
             BatchStart(this.form).then(
-              res => {
+              () => {
                 this.loadPercent();
               },
               () => {
@@ -343,6 +344,13 @@ export default {
               }
             );
           }
+          } catch (error) {
+            this.loading.close();
+            this.$message({
+                  type: "error",
+                  message: "开启失败"
+                });
+          }
         } else {
           return false;
         }
@@ -353,7 +361,6 @@ export default {
         return new Promise(resolve => setTimeout(resolve, time));
       };
       await CloneSpeed().then(async res => {
-        console.log(res.data);
         this.loading.setText(`请稍等，${res.data}%`);
         if(res.data !== 100) {
           await sleep(1000);
