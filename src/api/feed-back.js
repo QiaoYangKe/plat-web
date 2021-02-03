@@ -25,8 +25,9 @@ export function getFeedBackInfos(data) {
 
 export function readFeedBack(groupId) {
   return request({
-    url: `/api/FeedBackInfo/ReadFeedBack/${groupId}`,
-    method: 'get'
+    url: `/api/FeedBackInfo/ReadFeedBack`,
+    method: 'get',
+    params: groupId
   })
 }
 

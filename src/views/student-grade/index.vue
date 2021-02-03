@@ -5,9 +5,10 @@
         <el-form-item>
           <el-select
             clearable
-            v-model="queryForm.classId"
+            v-model="queryForm.ClassIds"
             placeholder="请选择班级"
             multiple
+            collapse-tags
           >
             <el-option
               v-for="item in classList"
@@ -20,9 +21,11 @@
         <el-form-item>
           <el-select
             clearable
-            v-model="queryForm.courseInfoId"
+            v-model="queryForm.CourseInfoIds"
             placeholder="请选择课程"
+            @change="courseChange"
             multiple
+            collapse-tags
           >
             <el-option
               v-for="item in courseList"
@@ -70,14 +73,36 @@
               <span>{{ scope.row.className }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="课程名称" align="left" show-overflow-tooltip>
+          <template v-if="selectedCourses.length === 0">
+            <el-table-column
+              v-for="item in courseList"
+              :key="item.id"
+              :label="item.name"
+            >
+              <template slot-scope="scope">
+                <span>{{ scope.row.experimentScore }}</span>
+              </template>
+            </el-table-column>
+          </template>
+          <template v-else>
+            <el-table-column
+              v-for="item in selectedCourses"
+              :key="item.id"
+              :label="item.name"
+            >
+              <template slot-scope="scope">
+                <span>{{ scope.row.experimentScore }}</span>
+              </template>
+            </el-table-column>
+          </template>
+          <!-- <el-table-column label="课程名称" align="left" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.className }}</span>
             </template>
-          </el-table-column>
-          <el-table-column label="分数" align="left">
+          </el-table-column> -->
+          <el-table-column label="平均分" align="left">
             <template slot-scope="scope">
-              <span> {{ scope.row.scoreValue }} </span>
+              <span> {{ scope.row.experimentScore }} </span>
             </template>
           </el-table-column>
         </el-table>
@@ -128,13 +153,15 @@ export default {
       total: 0,
       classList: [],
       courseList: [],
+      courseChangeVisble: false,
+      selectedCourses: [],
       echartsObj: {},
       queryForm: {
         pageIndex: 1,
         pageSize: 10,
-        classId: undefined,
+        ClassIds: undefined,
         userName: undefined,
-        courseInfoId: undefined
+        CourseInfoIds: undefined
       }
     };
   },
@@ -150,8 +177,8 @@ export default {
   methods: {
     async initChars() {
       await scoreEcharts({}).then(res => {
-        this.echartsObj = res.data
-      })
+        this.echartsObj = res.data;
+      });
       const myChart = echarts.init(document.getElementById("demo"));
       const myChartRight = echarts.init(document.getElementById("demoRight"));
       const myChartBottom = echarts.init(document.getElementById("demoBottom"));
@@ -299,10 +326,14 @@ export default {
         this.list = res.data;
         this.total = res.total;
         this.listLoading = false;
+        if(this.courseChangeVisble) {
+          this.selectedCourses = this.courseList.filter(item => this.queryForm.CourseInfoIds.indexOf(item.id) != -1);
+          this.courseChangeVisble = false;
+        }
       });
     },
-    addClick() {
-      alert("新增");
+    courseChange() {
+      this.courseChangeVisble = true;
     },
     handleClick(row) {
       alert("查看");

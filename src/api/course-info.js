@@ -8,10 +8,17 @@ export function courseList(data) {
   })
 }
 
+export function delCourse(id) {
+  return request({
+    url: `/api/CourseInfo/Delete/${id}`,
+    method: 'get'
+  })
+}
+
 export function addCourse(data) {
   return request({
     url: '/api/CourseInfo/Add',
-    method: 'post',
+    method: 'get',
     data
   })
 }

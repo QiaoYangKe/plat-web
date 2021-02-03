@@ -36,6 +36,9 @@
           <el-button type="primary" @click="vmDistribution(1)"
             >批量开启虚拟机</el-button
           >
+          <el-button type="primary" @click="vmDistribution(2)"
+            >获取IP</el-button
+          >
         </el-form-item>
       </el-form>
     </el-header>
@@ -194,10 +197,9 @@ import {
   VMRebootNet
 } from "@/api/vm-info.js";
 import Pagination from "@/components/Pagination/index.vue";
-import { templateList, CloneSpeed } from "@/api/template-manager.js";
+import { templateList, CloneSpeed, GuestIP } from "@/api/template-manager.js";
 import { classInfoDic } from "@/api/class-info.js";
 import { appConsts } from "@/appConsts";
-import { number } from 'echarts/lib/export';
 export default {
   name: "VirtualMachineManager",
   components: { Pagination },
@@ -310,51 +312,61 @@ export default {
     bindGroupSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          if (this.form.type === 0) {
+            this.loading = this.$loading({
+            lock: true,
+            text: `请稍等，0%`,
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
+          VMClone(this.form).then(
+            () => {
+              this.loadPercent();
+            },
+            () => {
+              this.$message({
+                type: "error",
+                message: "分配失败"
+              });
+              this.loading.close();
+            }
+          );
+        } else if(this.form.type === 1) {
           this.loading = this.$loading({
             lock: true,
             text: `请稍等，0%`,
             spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.7)"
           });
-          try {
-            if (this.form.type === 0) {
-            VMClone(this.form).then(
-              () => {
-                this.loadPercent();
-              },
-              () => {
-                this.$message({
-                  type: "error",
-                  message: "分配失败"
-                });
-                this.loading.close();
-              }
-            );
-          } else {
-            BatchStart(this.form).then(
-              () => {
-                this.loadPercent();
-              },
-              () => {
-                this.$message({
-                  type: "error",
-                  message: "开启失败"
-                });
-                this.loading.close();
-              }
-            );
-          }
-          } catch (error) {
-            this.loading.close();
-            this.$message({
-                  type: "error",
-                  message: "开启失败"
-                });
-          }
+          BatchStart(this.form).then(
+            () => {
+              this.loadPercent();
+            },
+            () => {
+              this.$message({
+                type: "error",
+                message: "开启失败"
+              });
+              this.loading.close();
+            }
+          );
+        } else {
+          this.getIp();
+        }
         } else {
           return false;
         }
       });
+    },
+    getIp() {
+      GuestIP({classId: this.form.classId}).then(() => {
+        this.$message({
+        type: "success",
+        message: "成功"
+        });
+        this.query();
+        this.dialogFormVisible = false;
+      })
     },
     async loadPercent() {
       const sleep = time => {

@@ -44,6 +44,14 @@ export function createVm(data) {
   })
 }
 
+export function GuestIP(data) {
+  return request({
+    url: '/api/Template/GuestIP',
+    method: 'get',
+    params: data
+  })
+}
+
 export function vmClone(data) {
   return request({
     url: '/api/VMInfo/VMClone',

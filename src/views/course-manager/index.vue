@@ -69,6 +69,9 @@
             <el-button type="text" @click="enterCourse(scope.row)"
               >进入课程</el-button
             >
+            <el-button type="text" style="color:red;" @click="delCourse(scope.row)"
+              >删除课程</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -90,6 +93,7 @@ import {
   courseInfoById,
   updateCourseState,
   teamMenmberByClassDic,
+  delCourse
 } from "@/api/course-info.js";
 import { classInfoDic } from "@/api/class-info.js";
 export default {
@@ -169,6 +173,26 @@ export default {
         this.dialogFormVisible = true
       });
       this.$router.push({ path: "/course-detail", query: { id: row.id } });
+    },
+    delCourse(row) {
+      this.$confirm("删除此课程，是否继续？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        delCourse(row.id).then(res => {
+        this.$message({
+          message: "删除成功",
+          type: "success"
+        });
+        this.query();
+      })
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "已经取消删除"
+        });
+      });
     },
     handelChange(val) {
       this.groupLoading = true;

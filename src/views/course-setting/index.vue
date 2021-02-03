@@ -111,6 +111,7 @@
               </div>
               <uploader
                 @func="getData"
+                class="video-button"
                 :more="true"
                 :upType="['.mp4']"
               ></uploader>
@@ -369,6 +370,12 @@ export default {
   .video-class {
     width: 80%;
     height: auto;
+  }
+  .video-button {
+    width: 80%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
   }
 }
 .form-class {

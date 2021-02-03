@@ -184,9 +184,8 @@ export default {
 .uploader-btn:hover {
   background: #4499e9;
 }
-v-deep .uploader-example .uploader-list {
+.uploader-list {
   max-height: 440px;
-  overflow: auto;
-  overflow-x: hidden;
+  width: 100%;
 }
 </style>

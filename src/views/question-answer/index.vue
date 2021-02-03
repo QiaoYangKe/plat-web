@@ -154,7 +154,7 @@ export default {
       });
     },
     handleClick(row) {
-      this.$router.push(`/answer-detail/${row.id}`);
+      this.$router.push(`/answer-detail/${row.groupId}`);
     },
   },
 };

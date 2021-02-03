@@ -119,7 +119,7 @@ export default {
   methods: {
     async init() {
       const id = this.$route.params.id;
-      await readFeedBack(id).then((res) => {
+      await readFeedBack({groupId: id}).then((res) => {
         let lastOne = res.data.pop();
         this.form.fBTitle = lastOne.feedbackInfo.fbTitle;
         this.form.groupId = lastOne.feedbackInfo.groupId;

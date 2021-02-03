@@ -20,7 +20,6 @@ export default {
   },
   watch: {
     $route(route) {
-      // if you go to the redirect page, do not update the breadcrumbs
       if (route.path.startsWith('/redirect/')) {
         return
       }
@@ -32,12 +31,11 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      // only show routes with meta.title
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
 
       if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+        matched = [{ path: '/dashboard', meta: { title: '首页' }}].concat(matched)
       }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
@@ -50,7 +48,6 @@ export default {
       return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
     },
     pathCompile(path) {
-      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
       const { params } = this.$route
       var toPath = pathToRegexp.compile(path)
       return toPath(params)
