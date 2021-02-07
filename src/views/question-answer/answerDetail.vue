@@ -121,13 +121,13 @@ export default {
       const id = this.$route.params.id;
       await readFeedBack({groupId: id}).then((res) => {
         let lastOne = res.data.pop();
+        console.log(3,lastOne);
         this.form.fBTitle = lastOne.feedbackInfo.fbTitle;
         this.form.groupId = lastOne.feedbackInfo.groupId;
         this.form.courseId = lastOne.feedbackInfo.courseInfoId;
         this.form.toUserInfoId = lastOne.fromUserInfoId;
         res.data.push(lastOne);
         this.activities = res.data;
-        console.log(this.form, this.activities);
       });
     },
     answer() {

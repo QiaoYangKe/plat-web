@@ -19,12 +19,6 @@
             <el-form-item label="课程名称" prop="name">
               <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="课程介绍" prop="courseProduce">
-              <el-input v-model="ruleForm.courseProduce"></el-input>
-            </el-form-item>
-            <el-form-item label="课程人数" prop="account">
-              <el-input v-model="ruleForm.account" type="number"></el-input>
-            </el-form-item>
             <el-form-item label="添加班级" prop="classIds">
               <el-select
                 v-model="ruleForm.classIds"
@@ -41,22 +35,9 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <!-- <el-form-item label="添加虚拟机" prop="vmInfoIdList">
-              <el-select
-                v-model="ruleForm.vmInfoIdList"
-                placeholder="请选择班虚拟机"
-                multiple
-                collapse-tags
-                clearable
-              >
-                <el-option
-                  v-for="item in templates"
-                  :key="item.id"
-                  :label="item.vmName"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item> -->
+            <el-form-item label="课程介绍" prop="courseProduce">
+              <el-input type="textarea" v-model="ruleForm.account"></el-input>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')"
                 >确定</el-button
@@ -126,9 +107,9 @@
               <span class="span-class">可视化操作</span>
             </div>
             <div class="content-class">
-              <!-- <el-input v-model="ruleForm.urlExplain"></el-input> -->
+              <el-input v-model="ruleForm.urlExplain" style="width: 80%; margin-bottom: 20px;"></el-input>
               <span>{{ ruleForm.urlExplain }}</span>
-              <el-link :href="ruleForm.urlExplain">点击进入可视化操作</el-link>
+              <el-link :href="ruleForm.urlExplain" disabled>点击进入可视化操作</el-link>
             </div>
           </el-card>
         </el-col>
@@ -174,7 +155,7 @@ import {
 import { classInfoDic } from "@/api/class-info.js";
 import videoImg from "@/assets/images/timg.jpg";
 import { appConsts } from "@/appConsts.js";
-import uploader from "@/components/Uploader"
+import uploader from "@/components/Uploader";
 export default {
   name: "CourseSetting",
   components: { uploader },
@@ -186,7 +167,7 @@ export default {
         name: "",
         courseProduce: "",
         classIds: [],
-        account: 0,
+        account: "",
         videoPath: "",
         instructionsPath: undefined,
         topicPath: undefined,
@@ -210,8 +191,8 @@ export default {
           timeDivider: true,
           durationDisplay: true,
           remainingTimeDisplay: false,
-          fullscreenToggle: true, //全屏按钮
-        },
+          fullscreenToggle: true //全屏按钮
+        }
       },
       classList: [],
       rules: {
@@ -221,40 +202,40 @@ export default {
             min: 5,
             max: 10,
             message: "长度在 5 到 10 个字符",
-            trigger: "blur",
-          },
+            trigger: "blur"
+          }
         ],
         name: [
-          { required: true, message: "请填写课程名称", trigger: "change" },
+          { required: true, message: "请填写课程名称", trigger: "change" }
         ],
         classIds: [
-          { required: true, message: "请选择班级", trigger: "change" },
+          { required: true, message: "请选择班级", trigger: "change" }
         ],
         vmInfoIdList: [
-          { required: true, message: "请选择班级", trigger: "change" },
-        ],
-      },
+          { required: true, message: "请选择班级", trigger: "change" }
+        ]
+      }
     };
   },
   mounted() {
-    this.initClassList()
-    this.initCourse()
+    this.initClassList();
+    this.initCourse();
   },
   methods: {
     getData(val) {
-      console.log("getData方法", val)
-      this.ruleForm.videoPath = val
-        this.playerOptions.sources = [
-            {
-              src: appConsts.serverUrl + '/' + val,
-              type: 'video/mp4'
-            },
-          ];
+      console.log("getData方法", val);
+      this.ruleForm.videoPath = val;
+      this.playerOptions.sources = [
+        {
+          src: appConsts.serverUrl + "/" + val,
+          type: "video/mp4"
+        }
+      ];
     },
     initCourse() {
-      console.log(this.$route.query.id)
+      console.log(this.$route.query.id);
       if (this.$route.query.id != null) {
-        courseInfoById(this.$route.query.id).then((res) => {
+        courseInfoById(this.$route.query.id).then(res => {
           this.ruleForm.id = res.data.id;
           this.ruleForm.account = res.data.account;
           this.ruleForm.classIds = res.data.classIdList;
@@ -269,20 +250,20 @@ export default {
       }
     },
     submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.ruleForm.id !== "") {
-            updateCourse(this.ruleForm).then((res) => {
+            updateCourse(this.ruleForm).then(res => {
               this.$message({
                 type: "success",
-                message: "修改成功",
+                message: "修改成功"
               });
             });
           } else {
-            addCourse(this.ruleForm).then((res) => {
+            addCourse(this.ruleForm).then(res => {
               this.$message({
                 type: "success",
-                message: "添加成功",
+                message: "添加成功"
               });
               this.ruleForm = {
                 id: "",
@@ -295,7 +276,7 @@ export default {
                 instructionsPath: undefined,
                 topicPath: undefined,
                 urlExplain: undefined,
-                VMInfoIdList: undefined,
+                VMInfoIdList: undefined
               };
             });
           }
@@ -311,7 +292,7 @@ export default {
     uploadInstruction(file) {
       let param = new FormData();
       param.append("files", file.file);
-      uploadInstructions(param).then((res) => {
+      uploadInstructions(param).then(res => {
         this.ruleForm.instructionsPath = res.data;
       });
     },
@@ -319,17 +300,17 @@ export default {
     uploadTrain(file) {
       let param = new FormData();
       param.append("files", file.file);
-      uploadTrains(param).then((res) => {
+      uploadTrains(param).then(res => {
         this.ruleForm.topicPath = res.data;
       });
     },
 
     initClassList() {
-      classInfoDic().then((res) => {
+      classInfoDic().then(res => {
         this.classList = res.data;
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

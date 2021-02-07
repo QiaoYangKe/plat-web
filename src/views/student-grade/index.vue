@@ -60,17 +60,17 @@
         >
           <el-table-column align="center" label="学号" width="95">
             <template slot-scope="scope">
-              {{ scope.row.stuNo }}
+              {{ scope.row.StuNo }}
             </template>
           </el-table-column>
           <el-table-column label="姓名">
             <template slot-scope="scope">
-              {{ scope.row.userName }}
+              {{ scope.row.UserName }}
             </template>
           </el-table-column>
           <el-table-column label="班级" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.className }}</span>
+              <span>{{ scope.row.ClassName }}</span>
             </template>
           </el-table-column>
           <template v-if="selectedCourses.length === 0">
@@ -80,7 +80,7 @@
               :label="item.name"
             >
               <template slot-scope="scope">
-                <span>{{ scope.row.experimentScore }}</span>
+                <span>{{ scope.row[`${item.number}`] }}</span>
               </template>
             </el-table-column>
           </template>
@@ -91,18 +91,13 @@
               :label="item.name"
             >
               <template slot-scope="scope">
-                <span>{{ scope.row.experimentScore }}</span>
+                <span>{{ scope.row[`${item.number}`] }}</span>
               </template>
             </el-table-column>
           </template>
-          <!-- <el-table-column label="课程名称" align="left" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <span>{{ scope.row.className }}</span>
-            </template>
-          </el-table-column> -->
           <el-table-column label="平均分" align="left">
             <template slot-scope="scope">
-              <span> {{ scope.row.experimentScore }} </span>
+              <span> {{ scope.row.AvgScore }} </span>
             </template>
           </el-table-column>
         </el-table>
@@ -153,7 +148,7 @@ export default {
       total: 0,
       classList: [],
       courseList: [],
-      courseChangeVisble: false,
+      courseChangeVisble: true,
       selectedCourses: [],
       echartsObj: {},
       queryForm: {
@@ -186,7 +181,7 @@ export default {
       // 指定图表的配置项和数据
       const option = {
         title: {
-          text: "班级最新阶段分数统计",
+          text: "最新阶段分数统计",
           left: "center"
         },
         tooltip: {
@@ -222,14 +217,14 @@ export default {
       // 指定图表的配置项和数据
       const optionRight = {
         title: {
-          text: "班级全阶段分数统计",
+          text: "所选阶段平均分统计",
           left: "center"
         },
         tooltip: {
           trigger: "item",
           formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
-        color: ["#a2baf6", "#6b9ddb", "#3c90f7", "#24335a"],
+        color: ["#a2baf6", "#6b9ddb", "#3c90f7", "#24335a", "#6b9ddb"],
         series: [
           {
             name: "占比",
@@ -240,13 +235,7 @@ export default {
               position: "inside",
               formatter: "{b} \n{d}%"
             },
-            data: [
-              { value: 0.2, name: "60-80" },
-              { value: 0.4, name: "80-90" },
-              { value: 0.3, name: ">90" },
-              { value: 0.1, name: "<60" }
-            ],
-            // data: this.echartsObj.allStage,
+            data: this.echartsObj.allStage,
             emphasis: {
               label: {
                 fontSize: "14",
@@ -264,7 +253,7 @@ export default {
       // 指定图表的配置项和数据
       const optionBottom = {
         title: {
-          text: "所有班级分数统计",
+          text: "所选阶段分数统计",
           left: "center"
         },
         tooltip: {
@@ -275,8 +264,8 @@ export default {
           "#3c90f7",
           "#55bfc0",
           "#034d9b",
-          "##5ebe67",
           "#517ba9",
+          "##5ebe67",
           "#229991"
         ],
         series: [
@@ -293,15 +282,15 @@ export default {
                 fontWeight: "light"
               }
             },
-            data: [
-              { value: 0.1, name: "60-70" },
-              { value: 0.2, name: "80-90" },
-              { value: 0.1, name: "70-80" },
-              { value: 0.3, name: "90-99" },
-              { value: 0.2, name: "0-60" },
-              { value: 0.1, name: "100" }
-            ]
-            // data: this.echartsObj.allClassStatistics
+            // data: [
+            //   { value: 0.1, name: "60-70" },
+            //   { value: 0.2, name: "80-90" },
+            //   { value: 0.1, name: "70-80" },
+            //   { value: 0.3, name: "90-99" },
+            //   { value: 0.2, name: "0-60" },
+            //   { value: 0.1, name: "100" }
+            // ]
+            data: this.echartsObj.allClassStatistics
           }
         ]
       };
@@ -323,20 +312,18 @@ export default {
     },
     query() {
       scoreInfoList(this.queryForm).then(res => {
-        this.list = res.data;
-        this.total = res.total;
+        this.list = res.data.rows;
+        this.total = res.data.total;
         this.listLoading = false;
         if(this.courseChangeVisble) {
-          this.selectedCourses = this.courseList.filter(item => this.queryForm.CourseInfoIds.indexOf(item.id) != -1);
+          this.$set(this, 'selectedCourses', res.data.courses);
           this.courseChangeVisble = false;
+          this.initChars();
         }
       });
     },
     courseChange() {
       this.courseChangeVisble = true;
-    },
-    handleClick(row) {
-      alert("查看");
     }
   }
 };

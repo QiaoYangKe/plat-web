@@ -7,8 +7,8 @@ import store from '@/store/index.js'
  * @param route
  */
 function hasPermission(authorList, route) {
-  if (route.meta && route.meta.sqlRouter) {
-    return authorList.some(router => route.meta.sqlRouter === router.AccessRealName)
+  if (route.meta && route.name) {
+    return authorList.some(router => route.name === router.AccessRealName)
   } else {
     return true
   }
@@ -53,12 +53,9 @@ const actions = {
       let authorList = []
       authorizeByUserType(store.getters.roles[0] == null ? 2: store.getters.roles[0]).then(res => {
         authorList = res.data
+        console.log(3,authorList)
         let accessedRoutes
-        if (roles.includes(2)) {
-          accessedRoutes = asyncRoutes || []
-        } else {
-          accessedRoutes = filterAsyncRoutes(asyncRoutes, authorList)
-        }
+        accessedRoutes = filterAsyncRoutes(asyncRoutes, authorList)
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)
       })

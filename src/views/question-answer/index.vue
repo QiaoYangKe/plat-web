@@ -45,7 +45,10 @@
         highlight-current-row
       >
         <el-table-column align="center" width="50px">
-          <i class="el-icon-message" />
+           <template slot-scope="scope">
+             <i class="el-icon-message" v-if="scope.row.isRead" />
+             <i class="el-icon-message" style="color: yellow;" v-else />
+          </template>
         </el-table-column>
         <el-table-column align="center" label="反馈人">
           <template slot-scope="scope">

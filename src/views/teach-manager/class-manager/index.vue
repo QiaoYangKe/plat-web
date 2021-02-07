@@ -28,6 +28,11 @@
               {{ scope.row.createTime | dateFormat }}
             </template>
           </el-table-column>
+          <el-table-column label="备注" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.note }}
+            </template>
+          </el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="handleClick(scope.row)">编辑</el-button>
@@ -35,10 +40,14 @@
             </template>
           </el-table-column>
         </el-table>
-      <el-dialog title="班级信息" :visible.sync="dialogFormVisible">
+      <el-dialog title="班级信息" :visible.sync="dialogFormVisible" width="450px">
         <el-form :model="form" size="small">
           <el-form-item label="班级名称" label-width="100px">
-            <el-input v-model="form.className" autocomplete="off"></el-input>
+            <el-input v-model="form.className" autocomplete="off" style="width: 300px;"></el-input>
+          </el-form-item>
+          
+          <el-form-item label="备注" label-width="100px">
+            <el-input v-model="form.note" type="textarea" style="width: 300px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -98,7 +107,7 @@ export default {
       })
     },
     addClick() {
-      this.form = { className: ''}
+      this.form = { className: '', note: ''}
       this.dialogFormVisible = true
     },
     formSubmit() {

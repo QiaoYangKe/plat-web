@@ -81,7 +81,7 @@ export default {
         urlList: [],
         fBTitle: "",
         fBContent: "",
-        courseId: "",
+        courseId: ""
       },
       dialogVisible: false,
       benDisable: false,
@@ -107,16 +107,12 @@ export default {
       this.dialogVisible = true;
     },
     close() {
-      this.$confirm("确认关闭？")
-        .then((_) => {})
-        .catch((_) => {});
       this.$refs["form"].resetFields();
       this.dialogVisible = false
     },
     handleClose(done) {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-            this.benDisable = true
             addFeedBack(this.form).then((res) => {
               this.$message({
                 type: "success",

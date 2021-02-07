@@ -39,6 +39,14 @@ export function VMStop(data) {
   })
 }
 
+export function BatchVMStop(data) {
+  return request({
+    url: '/api/Template/BatchVMStop',
+    method: 'get',
+    params: data
+  })
+}
+
 export function VMSuspend(vMId) {
   return request({
     url: `/api/VMInfo/VMSuspend/${vMId}`,

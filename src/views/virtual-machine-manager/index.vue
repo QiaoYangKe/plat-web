@@ -36,6 +36,9 @@
           <el-button type="primary" @click="vmDistribution(1)"
             >批量开启虚拟机</el-button
           >
+          <el-button type="primary" @click="vmDistribution(3)"
+            >批量关闭虚拟机</el-button
+          >
           <el-button type="primary" @click="vmDistribution(2)"
             >获取IP</el-button
           >
@@ -187,14 +190,12 @@
 import {
   VMClone,
   VMInfoByUser,
-  VmById,
   VMStart,
   VMStop,
   VMReboot,
+  BatchVMStop,
   VMRemove,
-  VMRebootHost,
-  BatchStart,
-  VMRebootNet
+  BatchStart
 } from "@/api/vm-info.js";
 import Pagination from "@/components/Pagination/index.vue";
 import { templateList, CloneSpeed, GuestIP } from "@/api/template-manager.js";
@@ -332,26 +333,29 @@ export default {
             }
           );
         } else if(this.form.type === 1) {
-          this.loading = this.$loading({
-            lock: true,
-            text: `请稍等，0%`,
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)"
-          });
           BatchStart(this.form).then(
             () => {
-              this.loadPercent();
-            },
-            () => {
               this.$message({
-                type: "error",
-                message: "开启失败"
+                type: "success",
+                message: "开启成功"
               });
-              this.loading.close();
+              this.dialogFormVisible = false;
+              this.query();
             }
           );
-        } else {
+        } else if(this.form.type === 2) {
           this.getIp();
+        } else {
+           BatchVMStop(this.form).then(
+            () => {
+              this.$message({
+                type: "success",
+                message: "关闭成功"
+              });
+              this.dialogFormVisible = false;
+              this.query();
+            }
+          );
         }
         } else {
           return false;
@@ -374,8 +378,8 @@ export default {
       };
       await CloneSpeed().then(async res => {
         this.loading.setText(`请稍等，${res.data}%`);
-        if(res.data !== 100) {
-          await sleep(1000);
+        if(res.data !== '100') {
+          await sleep(3000);
           await this.loadPercent();
         } else {
           this.dialogFormVisible = false;

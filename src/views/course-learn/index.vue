@@ -2,20 +2,6 @@
   <el-container>
     <el-header height="auto">
       <el-form :inline="true" :model="queryForm" class="demo-form-inline">
-        <!-- <el-form-item>
-          <el-select
-            v-model="queryForm.classId"
-            placeholder="请选择班级"
-            style="width: 400px"
-          >
-            <el-option
-              v-for="item in classList"
-              :key="item.id"
-              :label="item.className"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item> -->
         <el-form-item>
           <el-input v-model="queryForm.name" placeholder="请输入名称" style="width: 400px"></el-input>
         </el-form-item>
@@ -42,6 +28,11 @@
         <el-table-column label="课程名称">
           <template slot-scope="scope">
             {{ scope.row.name }}
+          </template>
+        </el-table-column>
+        <el-table-column label="成绩" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.score==null? '未上传':scope.row.score }}
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
@@ -76,13 +67,12 @@
 <script>
 import Pagination from "@/components/Pagination/index.vue";
 import {
-  courseList,
   courseInfoById,
   updateCourseState,
+  courseScore,
   teamMenmberByClassDic
 } from "@/api/course-info.js";
 import { classInfoDic } from "@/api/class-info.js";
-import { vmClone } from "@/api/template-manager.js";
 export default {
   name: "CourseManager",
   components: { Pagination },
@@ -134,7 +124,6 @@ export default {
       queryForm: {
         pageIndex: 1,
         pageSize: 10,
-        classId: undefined,
         name: undefined,
         isActive: true
       }
@@ -173,7 +162,7 @@ export default {
       });
     },
     query() {
-      courseList(this.queryForm).then(res => {
+      courseScore(this.queryForm).then(res => {
         this.list = res.data;
         this.total = res.total;
         this.listLoading = false;

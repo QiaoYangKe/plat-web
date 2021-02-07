@@ -54,6 +54,14 @@ export function deleteUser(userId) {
   })
 }
 
+export function deleteUserBatch(data) {
+  return request({
+    url: `/api/UserInfo/BatchDelete`,
+    method: 'post',
+    data
+  })
+}
+
 export function teamMember() {
   return request({
     url: '/api/Currency/TeamMember',

@@ -44,19 +44,20 @@ export const asyncRoutes = [
   {
     path: '/teach-manager',
     component: Layout,
-    meta: { title: '教学管理', icon: 'teach-manager', affix: true, sqlRouter: 'UserInfo' },
+    name: "ClassManager",
+    meta: { title: '教学管理', icon: 'teach-manager', affix: true },
     children: [
       {
         path: '/class-manager',
         component: () => import('@/views/teach-manager/class-manager'),
         name: 'ClassManager',
-        meta: { title: '班级管理', affix: true, sqlRouter: 'UserInfo' }
+        meta: { title: '班级管理', affix: true }
       },
       {
         path: '/student-manager',
         component: () => import('@/views/teach-manager/student-manager'),
         name: 'StudentManager',
-        meta: { title: '学生管理', affix: true, sqlRouter: 'UserInfo' }
+        meta: { title: '学生管理', affix: true }
       }
     ]
   },
@@ -69,7 +70,7 @@ export const asyncRoutes = [
         path: '/course-setting',
         component: () => import('@/views/course-setting'),
         name: 'CourseSetting',
-        meta: { title: '课程设置', sqlRouter: 'CourseInfo', icon: 'course-setting', affix: true }
+        meta: { title: '课程设置', icon: 'course-setting', affix: true }
       }
     ]
   },
@@ -82,14 +83,14 @@ export const asyncRoutes = [
         path: '/course-manager',
         component: () => import('@/views/course-manager/index'),
         name: 'CourseManager',
-        meta: { title: '课程管理', sqlRouter: 'CourseInfo', icon: 'course-manager', affix: true }
+        meta: { title: '课程管理', icon: 'course-manager', affix: true }
       },
       {
         path: '/course-detail',
         component: () => import('@/views/course-manager/courseDetail'),
         name: 'CourseDetail',
         hidden: true,
-        meta: { title: '课程管理', sqlRouter: 'CourseInfo', icon: 'course-manager', affix: true }
+        meta: { title: '课程管理', icon: 'course-manager', affix: true }
       }
     ]
   },
@@ -102,7 +103,7 @@ export const asyncRoutes = [
         path: '/log-manager',
         component: () => import('@/views/log-manager'),
         name: 'LogManager',
-        meta: { title: '日志管理', sqlRouter: 'LogInfo', icon: 'log-manager', affix: true }
+        meta: { title: '日志管理', icon: 'log-manager', affix: true }
       }
     ]
   },
@@ -115,14 +116,14 @@ export const asyncRoutes = [
         path: '/course-learn',
         component: () => import('@/views/course-learn'),
         name: 'CourseLearn',
-        meta: { title: '课程学习', sqlRouter: 'UserInfo', icon: 'course-learn', affix: true }
+        meta: { title: '课程学习', icon: 'course-learn', affix: true }
       },
       {
         path: '/course-learn-detail',
         component: () => import('@/views/course-learn/courseLearnDetail'),
-        name: 'CourseLearn',
+        name: 'CourseLearnDetail',
         hidden: true,
-        meta: { title: '课程学习', sqlRouter: 'UserInfo', icon: 'course-learn', affix: true }
+        meta: { title: '课程学习', icon: 'course-learn', affix: true }
       }
     ]
   },
@@ -135,7 +136,7 @@ export const asyncRoutes = [
         path: '/lab-report',
         component: () => import('@/views/lab-report'),
         name: 'LabReport',
-        meta: { title: '实验报告', sqlRouter: 'ScoreInfo', icon: 'lab-report', affix: true }
+        meta: { title: '实验报告', icon: 'lab-report', affix: true }
       }
     ]
   },
@@ -144,7 +145,7 @@ export const asyncRoutes = [
     component: () => import('@/views/lab-report/report-view'),
     name: 'ReportView',
     hidden: true,
-    meta: { title: '实验报告预览', sqlRouter: 'ScoreInfo' }
+    meta: { title: '实验报告预览'}
   },
   {
     path: '/question-answer',
@@ -155,7 +156,7 @@ export const asyncRoutes = [
         path: '/question-answer',
         component: () => import('@/views/question-answer'),
         name: 'QuestionAnswer',
-        meta: { title: '问题解答', sqlRouter: 'FeedBackInfo', icon: 'question-answer', affix: true }
+        meta: { title: '问题解答', icon: 'question-answer', affix: true }
       },
       {
         path: '/answer-detail/:id',
@@ -175,7 +176,7 @@ export const asyncRoutes = [
         path: '/question-feedback',
         component: () => import('@/views/question-feedback'),
         name: 'QuestionFeedback',
-        meta: { title: '问题反馈', sqlRouter: 'FeedBackInfo', icon: 'question-feedback', affix: true }
+        meta: { title: '问题反馈', icon: 'question-feedback', affix: true }
       }
     ]
   },
@@ -187,8 +188,8 @@ export const asyncRoutes = [
       {
         path: '/student-grade',
         component: () => import('@/views/student-grade'),
-        name: 'LabReport',
-        meta: { title: '成绩展示', sqlRouter: 'UserInfo', icon: 'student-grade', affix: true }
+        name: 'StudentGrade',
+        meta: { title: '成绩展示', icon: 'student-grade', affix: true }
       }
     ]
   },
@@ -201,7 +202,7 @@ export const asyncRoutes = [
         path: '/teacher-manager',
         component: () => import('@/views/teacher-manager'),
         name: 'TeacherManager',
-        meta: { title: '教师管理', sqlRouter: 'UserInfo', icon: 'teacher-manager', affix: true }
+        meta: { title: '教师管理', icon: 'teacher-manager', affix: true }
       }
     ]
   },
@@ -213,8 +214,8 @@ export const asyncRoutes = [
       {
         path: '/jurisdiction-manager',
         component: () => import('@/views/jurisdiction-manager'),
-        name: 'TeacherManager',
-        meta: { title: '权限管理', sqlRouter: 'UserInfo', icon: 'jurisdiction-manager', affix: true }
+        name: 'JurisdictionManager',
+        meta: { title: '权限管理', icon: 'jurisdiction-manager', affix: true }
       }
     ]
   },
@@ -227,7 +228,7 @@ export const asyncRoutes = [
         path: '/template-manager',
         component: () => import('@/views/template-manager'),
         name: 'TemplateManager',
-        meta: { title: '模板管理', sqlRouter: 'Template', icon: 'template', affix: true }
+        meta: { title: '模板管理', icon: 'template', affix: true }
       }
     ]
   },
@@ -239,8 +240,8 @@ export const asyncRoutes = [
       {
         path: '/virtual-machine-manager',
         component: () => import('@/views/virtual-machine-manager'),
-        name: 'TemplateManager',
-        meta: { title: '虚拟机管理', sqlRouter: 'VMInfo', icon: 'virtual', affix: true }
+        name: 'VirtualMachineManager',
+        meta: { title: '虚拟机管理', icon: 'virtual', affix: true }
       }
     ]
   },
@@ -253,7 +254,7 @@ export const asyncRoutes = [
         path: '/platform-management',
         component: () => import('@/views/platform-management'),
         name: 'PlatformManagement',
-        meta: { title: '平台管理', sqlRouter: 'WebIntroduce', icon: 'platform-management', affix: true}
+        meta: { title: '平台管理', icon: 'platform-management', affix: true}
       }
     ]
   },
@@ -266,7 +267,7 @@ export const asyncRoutes = [
         path: '/system-detection',
         component: () => import('@/views/system-detection'),
         name: 'SystemDetection',
-        meta: { title: '系统运行检测', sqlRouter: 'UserInfo', icon: 'system-detection', affix: true }
+        meta: { title: '系统运行检测', icon: 'system-detection', affix: true }
       }
     ]
   },
@@ -279,7 +280,7 @@ export const asyncRoutes = [
         path: '/data-backup',
         component: () => import('@/views/data-backup'),
         name: 'DataBackup',
-        meta: { title: '数据备份', sqlRouter: 'UserInfo', icon: 'data-backup', affix: true }
+        meta: { title: '数据备份', icon: 'data-backup', affix: true }
       }
     ]
   },

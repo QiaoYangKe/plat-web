@@ -13,14 +13,13 @@
           <el-aside width="auto">
             <el-card :body-style="{ width: '351px', height: '850px' }">
               <div class="clear-fix">
-                <span class="span-class">操作手册</span>
+                <span class="span-class">课程介绍</span>
               </div>
 
-              <span>
-                河南中盾云安信息科技有限公司（简称“中盾云安”）成立于2016年9月，是汉威科技（股票代码：300007）旗下智慧安全板块的重要成员企业，2019年度获评国家高新技术企业。中盾云安定位为区块链综合解决方案提供商，致力于依托区块链、电子签名、商用密码、5G、边缘计算等技术，打造数字经济、赋能产业发展。<br />
-
-                中盾云安是河南省首家区块链技术落地应用企业、中国区块链生态联盟区块链安全标准工作组成员单位、阿里巴巴“云合计划”的第一批合作伙伴、芝麻信用河南唯一合作伙伴、中原云统一认证服务平台重要支撑单位，曾多次参与区块链、云计算、大数据、智能制造、智慧城市等领域的课题研究、标准制订和方案论证，并承担国家教育部教育卡安全标准制订、工信部可信智能芯片、国家卫计委居民健康卡、国家工商局电子营业执照等应用的研究工作。
+              <span style="display:block;">
+              {{ currentCourse.account }} 
               </span>
+              <el-link type="primary" style="display: inline-block;">操作手册下载</el-link>
             </el-card>
           </el-aside>
           <el-main class="leaning-main">
@@ -96,18 +95,6 @@
       </el-tab-pane>
       <el-tab-pane label="课程练习" name="second">
         <el-container>
-          <el-aside width="auto">
-            <el-card :body-style="{ width: '351px', height: '100%' }">
-              <div class="clear-fix">
-                <span class="span-class">操作手册</span>
-              </div>
-              <span>
-                河南中盾云安信息科技有限公司（简称“中盾云安”）成立于2016年9月，是汉威科技（股票代码：300007）旗下智慧安全板块的重要成员企业，2019年度获评国家高新技术企业。中盾云安定位为区块链综合解决方案提供商，致力于依托区块链、电子签名、商用密码、5G、边缘计算等技术，打造数字经济、赋能产业发展。<br />
-
-                中盾云安是河南省首家区块链技术落地应用企业、中国区块链生态联盟区块链安全标准工作组成员单位、阿里巴巴“云合计划”的第一批合作伙伴、芝麻信用河南唯一合作伙伴、中原云统一认证服务平台重要支撑单位，曾多次参与区块链、云计算、大数据、智能制造、智慧城市等领域的课题研究、标准制订和方案论证，并承担国家教育部教育卡安全标准制订、工信部可信智能芯片、国家卫计委居民健康卡、国家工商局电子营业执照等应用的研究工作。
-              </span>
-            </el-card>
-          </el-aside>
           <el-main>
             <el-card
               :body-style="{ width: 'calc(100% + 5px)', height: '100%' }"
@@ -127,9 +114,9 @@
                 <el-row :gutter="2">
                   <el-col
                     :sm="8"
-                    :md="8"
-                    :lg="8"
-                    :xl="8"
+                    :md="6"
+                    :lg="6"
+                    :xl="6"
                     v-for="(item, index) in trains"
                     :key="index"
                     ><train
@@ -338,6 +325,7 @@ export default {
             arr.push(e.id);
           });
           VmById(arr.shift()).then(response => {
+            console.log(3,response);
             this.guestIp = response.data.vmip;
           });
         } else {

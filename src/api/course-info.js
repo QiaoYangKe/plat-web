@@ -8,6 +8,14 @@ export function courseList(data) {
   })
 }
 
+export function courseScore(data) {
+  return request({
+    url: '/api/Currency/CourseScore',
+    method: 'post',
+    data
+  })
+}
+
 export function delCourse(id) {
   return request({
     url: `/api/CourseInfo/Delete/${id}`,

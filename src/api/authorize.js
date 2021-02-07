@@ -9,7 +9,7 @@ export function getAuthorize() {
 
 export function authorizeByUserType(userType) {
   return request({
-    url: `/api/Authorize/AuthorizeByUserType/${userType}`,
+    url: `/api/Login/AuthorizeByUserType/${userType}`,
     method: 'get'
   })
 }
