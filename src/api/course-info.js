@@ -26,7 +26,7 @@ export function delCourse(id) {
 export function addCourse(data) {
   return request({
     url: '/api/CourseInfo/Add',
-    method: 'get',
+    method: 'post',
     data
   })
 }

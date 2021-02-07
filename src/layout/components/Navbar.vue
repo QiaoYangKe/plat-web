@@ -148,7 +148,10 @@
         <!-- <el-divider direction="vertical"></el-divider> -->
         <el-dropdown trigger="click" class="avatar-container">
           <div class="avatar-wrapper">
-            <el-image :src="userform.picture" class="user-avatar"></el-image>
+            <el-avatar :size="38"  shape="square" :src="userform.picture" @error="errorHandler">
+              <img :src="userform.picture"/>
+           </el-avatar>
+            <!-- <el-image :src="userform.picture" class="user-avatar"></el-image> -->
             {{ name }}
             <!-- <i class="el-icon-caret-bottom" /> -->
             <!-- <el-button type="text" class="button-style">操作中心</el-button> -->

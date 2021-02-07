@@ -86,6 +86,11 @@
             <span>{{ scope.row.userName }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="班级" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.className }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="端口号" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.vncPort }}</span>
@@ -379,7 +384,7 @@ export default {
       await CloneSpeed().then(async res => {
         this.loading.setText(`请稍等，${res.data}%`);
         if(res.data !== '100') {
-          await sleep(3000);
+          await sleep(1000);
           await this.loadPercent();
         } else {
           this.dialogFormVisible = false;
