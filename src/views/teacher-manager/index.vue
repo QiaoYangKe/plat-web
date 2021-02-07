@@ -47,12 +47,12 @@
          <el-form-item>
           <el-button type="danger" @click="delClick">删除</el-button>
         </el-form-item>
-        <el-dialog title="老师信息" :visible.sync="dialogFormVisible" width="650px">
-          <el-form :model="form">
-            <el-form-item label="名称">
-              <el-input v-model="form.userName" autocomplete="off" :style="inputWidth"></el-input>
+        <el-dialog title="老师信息" :visible.sync="dialogFormVisible" width="750px">
+          <el-form :model="form" :inline="true" :rules="rules" ref="form" label-width="100px">
+            <el-form-item label="名称" :prop="userName">
+              <el-input v-model="form.userName" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="性别">
+            <el-form-item label="性别" :prop="sex">
               <el-select v-model="form.sex" placeholder="请选择" :style="inputWidth">
                 <el-option
                   label="男"
@@ -64,19 +64,19 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="工号">
-              <el-input v-model="form.stuNo" autocomplete="off" :style="inputWidth"></el-input>
+            <el-form-item label="工号" :prop="stuNo">
+              <el-input v-model="form.stuNo" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="手机">
-              <el-input v-model="form.phone" autocomplete="off" :style="inputWidth"></el-input>
+            <el-form-item label="手机" :prop="phone">
+              <el-input v-model="form.phone" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="职称">
-              <el-input v-model="form.remarks" autocomplete="off" :style="inputWidth"></el-input>
+            <el-form-item label="职称" :prop="remarks">
+              <el-input v-model="form.remarks" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="账号">
-              <el-input v-model="form.userAccount" autocomplete="off" :style="inputWidth"></el-input>
+            <el-form-item label="账号" :prop="userAccount">
+              <el-input v-model="form.userAccount" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="班级">
+            <el-form-item label="班级" :prop="classInfoId">
               <el-select v-model="form.classInfoId" placeholder="请选择" :style="inputWidth">
                 <el-option
                   v-for="item in classList"
@@ -196,6 +196,23 @@ export default {
       multipleSelection: [],
       form: {},
       filePath: "",
+      rules: {
+        stuNo: [
+          { required: true, message: "请输入工号/学号", trigger: "blur" }
+        ],
+        userAccount: [
+          { required: true, message: "请输入账号", trigger: "blur" }
+        ],
+        userName: [
+          { required: true, message: "请输入名称", trigger: "blur" }
+        ],
+        phone: [
+          { pattern: /^1[3-9](\d{9})$/, message: "请输入手机号", trigger: "blur" }
+        ],
+        sex: [
+          { required: true, message: "请选择性别", trigger: "blur" }
+        ]
+      },
       queryForm: {
         pageIndex: 1,
         pageSize: 10,

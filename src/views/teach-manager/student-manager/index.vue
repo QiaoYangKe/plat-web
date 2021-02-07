@@ -50,19 +50,19 @@
         <el-dialog
           title="学生信息"
           :visible.sync="dialogFormVisible"
-          width="650px"
+          width="750px"
         >
-          <el-form :model="form">
-            <el-form-item label="名称">
+          <el-form :model="form" :inline="true" :rules="rules" label-width="80px">
+            <el-form-item label="名称" prop="userName">
               <el-input v-model="form.userName" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="账号">
+            <el-form-item label="账号" prop="userAccount">
               <el-input
                 v-model="form.userAccount"
                 :style="inputWidth"
               ></el-input>
             </el-form-item>
-            <el-form-item label="性别">
+            <el-form-item label="性别" prop="sex">
               <el-select v-model="form.sex" placeholder="请选择" :style="inputWidth">
                 <el-option
                   label="男"
@@ -74,16 +74,16 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="学号">
+            <el-form-item label="学号" prop="stuNo">
               <el-input v-model="form.stuNo" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="手机">
+            <el-form-item label="手机" prop="phone">
               <el-input v-model="form.phone" autocomplete="off" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="小组">
+            <el-form-item label="小组" prop="groupName">
               <el-input v-model="form.groupName" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="班级">
+            <el-form-item label="班级" prop="classInfoId">
               <el-select
                 v-model="form.classInfoId"
                 placeholder="请选择"
@@ -201,6 +201,26 @@ export default {
       classList: [],
       fileList: [],
       multipleSelection: [],
+      rules: {
+        stuNo: [
+          { required: true, message: "请输入工号/学号", trigger: "blur" }
+        ],
+        userAccount: [
+          { required: true, message: "请输入账号", trigger: "blur" }
+        ],
+        userName: [
+          { required: true, message: "请输入名称", trigger: "blur" }
+        ],
+        phone: [
+          { pattern: /^1[3-9](\d{9})$/, message: "请输入手机号", trigger: "blur" }
+        ],
+        sex: [
+          { required: true, message: "请选择性别", trigger: "blur" }
+        ],
+        classInfoId: [
+          { required: true, message: "请选择班级", trigger: "blur" }
+        ]
+      },
       form: {},
       filePath: "",
       inputWidth: { width: "250px", marginBottom: "20px" },
@@ -259,6 +279,7 @@ export default {
           this.query();
           this.dialogFormVisible = false;
         });
+        return
       }
       updateUser(this.form).then(res => {
         this.$message({

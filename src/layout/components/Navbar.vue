@@ -6,59 +6,94 @@
       class="hamburger-container"
       @toggleClick="toggleSideBar"
     />
-    <el-dialog title="个人信息" :visible.sync="dialogFormUserVisible" width="650px">
+    <el-dialog
+      title="个人信息"
+      :visible.sync="dialogFormUserVisible"
+      width="650px"
+    >
       <el-form :model="userform" :inline="true" :rules="rules" ref="userform">
-            <el-form-item label="名称">
-              <el-input v-model="userform.userName" :style="inputWidth"></el-input>
-            </el-form-item>
-            <el-form-item label="头像">
-              <el-upload
-              class="avatar-uploader"
-              action="/"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">
-              <img v-if="userform.picture" :src="userform.picture" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-            </el-form-item>
-            <el-form-item label="性别">
-              <el-select v-model="userform.sex" placeholder="请选择" :style="inputWidth">
-                <el-option
-                  label="男"
-                  :value="true"
-                ></el-option>
-                <el-option
-                  label="女"
-                  :value="false"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item v-if="userform.userType===0" label="工号">
-              <el-input disabled v-model="userform.stuNo" autocomplete="off" :style="inputWidth"></el-input>
-            </el-form-item>
-            <el-form-item v-else-if="userform.userType===1" label="学号">
-              <el-input disabled v-model="userform.stuNo" autocomplete="off" :style="inputWidth"></el-input>
-            </el-form-item>
-            <el-form-item label="手机">
-              <el-input v-model="userform.phone" autocomplete="off" :style="inputWidth"></el-input>
-            </el-form-item>
-            <el-form-item v-if="userform.userType===0" label="职称">
-              <el-input v-model="userform.remarks" autocomplete="off" :style="inputWidth"></el-input>
-            </el-form-item>
-            <el-form-item label="账号">
-              <el-input disabled v-model="userform.userAccount" autocomplete="off" :style="inputWidth"></el-input>
-            </el-form-item>
-            <el-form-item v-if="userform.userType===1" label="班级">
-              <el-select disabled v-model="userform.classInfoId" placeholder="请选择" :style="inputWidth">
-                <el-option
-                  v-for="item in classList"
-                  :key="item.id"
-                  :label="item.className"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
+        <el-form-item label="名称" prop="userName">
+          <el-input v-model="userform.userName" :style="inputWidth"></el-input>
+        </el-form-item>
+        <el-form-item label="头像">
+          <el-upload
+            class="avatar-uploader"
+            action="/"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img
+              v-if="userform.picture"
+              :src="userform.picture"
+              class="avatar"
+            />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-select
+            v-model="userform.sex"
+            placeholder="请选择"
+            :style="inputWidth"
+          >
+            <el-option label="男" :value="true"></el-option>
+            <el-option label="女" :value="false"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="userform.userType === 0" label="工号" prop="stuNo">
+          <el-input
+            disabled
+            v-model="userform.stuNo"
+            autocomplete="off"
+            :style="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item v-else-if="userform.userType === 1" label="学号" prop="stuNo">
+          <el-input
+            disabled
+            v-model="userform.stuNo"
+            autocomplete="off"
+            :style="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="phone">
+          <el-input
+            v-model="userform.phone"
+            autocomplete="off"
+            :style="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item v-if="userform.userType === 0" label="职称" prop="remarks">
+          <el-input
+            v-model="userform.remarks"
+            autocomplete="off"
+            :style="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="账号">
+          <el-input
+            disabled
+            v-model="userform.userAccount"
+            autocomplete="off"
+            :style="inputWidth"
+          ></el-input>
+        </el-form-item>
+        <el-form-item v-if="userform.userType === 1" label="班级" prop="classInfoId">
+          <el-select
+            disabled
+            v-model="userform.classInfoId"
+            placeholder="请选择"
+            :style="inputWidth"
+          >
+            <el-option
+              v-for="item in classList"
+              :key="item.id"
+              :label="item.className"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelUser">取 消</el-button>
@@ -113,11 +148,9 @@
         <!-- <el-divider direction="vertical"></el-divider> -->
         <el-dropdown trigger="click" class="avatar-container">
           <div class="avatar-wrapper">
-          <el-image :src="userform.picture" class="user-avatar"></el-image>
-          {{
-          name
-        }}
-          <!-- <i class="el-icon-caret-bottom" /> -->
+            <el-image :src="userform.picture" class="user-avatar"></el-image>
+            {{ name }}
+            <!-- <i class="el-icon-caret-bottom" /> -->
             <!-- <el-button type="text" class="button-style">操作中心</el-button> -->
             <i class="el-icon-caret-bottom" />
           </div>
@@ -191,7 +224,7 @@ export default {
         sex: true,
         remarks: ""
       },
-      inputWidth: { width: "250px", marginBottom: "20px"},
+      inputWidth: { width: "250px", marginBottom: "20px" },
       rules: {
         oldPassWord: [
           { required: true, message: "请输入原密码", trigger: "blur" }
@@ -201,7 +234,22 @@ export default {
         ],
         confirmPassWord: [
           { required: true, message: "请确认密码", trigger: "blur" }
-        ]
+        ],
+        stuNo: [
+          { required: true, message: "请输入工号/学号", trigger: "blur" }
+        ],
+        userAccount: [
+          { required: true, message: "请输入账号", trigger: "blur" }
+        ],
+        userName: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        phone: [
+          {
+            pattern: /^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/,
+            message: "请输入正确手机号",
+            trigger: "blur"
+          }
+        ],
+        sex: [{ required: true, message: "请选择性别", trigger: "blur" }]
       }
     };
   },
@@ -211,40 +259,38 @@ export default {
   mounted() {
     this.getName();
     getInfo().then(res => {
-      this.$set(this, 'userform', res.data);
-    })
+      this.$set(this, "userform", res.data);
+    });
   },
   methods: {
-    
     handleAvatarSuccess(res, file) {
-      //
-        this.userform.picture = URL.createObjectURL(file.raw);
-      },
+      this.userform.picture = URL.createObjectURL(file.raw);
+    },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
+      const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+        this.$message.error("上传头像图片只能是 JPG 格式!");
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$message.error("上传头像图片大小不能超过 2MB!");
       }
       //file对象
       console.log(file);
-      const fr = new FileReader()
+      const fr = new FileReader();
       //以dataUrl（base64）方式读取文件内容
       fr.readAsDataURL(file);
       //fr加载文件的回调
-      fr.onload = (e)=>{
+      fr.onload = e => {
         // dataurl地址，用来显示
-        this.userform.picture = e.target.result
-        console.log('dataUrl---',e.target.result);
+        this.userform.picture = e.target.result;
+        console.log("dataUrl---", e.target.result);
         // 从dataurl截取的base64，用来传数据
-        console.log('base64---',e.target.result.replace(/^.*,(.*)$/,'$1'));
+        console.log("base64---", e.target.result.replace(/^.*,(.*)$/, "$1"));
 
         // 看懂了否乔同学 哦哦
-      }
+      };
       // 不用组件自带上传自己写上传逻辑
       return false;
       return isJPG && isLt2M;
@@ -260,28 +306,42 @@ export default {
     async updateUserInfo() {
       this.initClassList();
       await getInfo().then(res => {
-        this.$set(this, 'userform', res.data);
-      })
+        this.$set(this, "userform", res.data);
+      });
       this.dialogFormUserVisible = true;
     },
     submit() {
-      updatePwd(this.form).then(() => {
-        this.$message({
-          message: "修改成功",
-          type: "success"
-        });
-        this.resetForm("form");
-        this.dialogFormVisible = false;
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          updatePwd(this.form).then(() => {
+            this.$message({
+              message: "修改成功",
+              type: "success"
+            });
+            this.resetForm("form");
+            this.dialogFormVisible = false;
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
     },
     submitUser() {
-      updateUser(this.userform).then(() => {
-        this.$message({
-          message: "修改成功",
-          type: "success"
-        });
-        this.resetForm("userform");
-        this.dialogFormUserVisible = false;
+      this.$refs.userform.validate(valid => {
+        if (valid) {
+          updateUser(this.userform).then(() => {
+            this.$message({
+              message: "修改成功",
+              type: "success"
+            });
+            this.resetForm("userform");
+            this.dialogFormUserVisible = false;
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
     },
     cancel() {
@@ -310,29 +370,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 68px;
-    height: 68px;
-    line-height: 68px;
-    text-align: center;
-  }
-  .avatar {
-    width: 68px;
-    height: 68px;
-    display: block;
-  }
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 68px;
+  height: 68px;
+  line-height: 68px;
+  text-align: center;
+}
+.avatar {
+  width: 68px;
+  height: 68px;
+  display: block;
+}
 .navbar {
   height: 50px;
   overflow: hidden;

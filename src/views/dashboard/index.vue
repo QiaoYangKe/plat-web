@@ -48,6 +48,7 @@ export default {
     display: flex;
     flex-flow: column;
     padding: 150px 100px;
+    overflow: hidden;
     .title-container {
       margin-bottom: 30px;
       h1 {
