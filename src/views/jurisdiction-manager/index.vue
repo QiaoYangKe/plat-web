@@ -120,6 +120,7 @@ export default {
     },
     afterEdit(row) {
       const list = this.$refs[row.id].getCheckedKeys()
+      console.log(list,row.accessValues)
       if(row.accessValues.length === list.length && row.accessValues.filter(item => list.indexOf(item) === -1).length === 0) {
         return
       }
@@ -139,9 +140,8 @@ export default {
         }
         this.$refs[row.id].setCheckedKeys(row.accessValues)
       })
-    },
-    query() {},
-    handleCurrentChange() {}
+      console.log(this.$refs[row.id].getCheckedKeys(),row.accessValues)
+    }
   }
 }
 </script>

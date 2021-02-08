@@ -74,11 +74,9 @@ const actions = {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
-        removeToken()
         resetRouter()
-
         dispatch('tagsView/delAllViews', null, { root: true })
-
+        removeToken()
         resolve()
       }).catch(error => {
         reject(error)

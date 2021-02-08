@@ -48,7 +48,6 @@ router.beforeEach(async(to, from, next) => {
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
-      // 路由bug
       next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
