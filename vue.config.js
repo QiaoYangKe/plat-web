@@ -37,21 +37,46 @@ module.exports = {
       errors: true
     },
     proxy: {
-      // change xxx-api/login => mock/login
-      // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         target: `http://10.10.0.2:88/`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
+      },
+      '/echartUrl': {
+        target: `http://10.10.0.2:19999/`,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/echartUrl': ''
+        }
+      },
+      '/baseUrl': {
+        target: `http://10.10.0.2:88/`,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/baseUrl': ''
+        }
+      },
+      '/vncUrl': {
+        target: `http://10.10.0.2:8790/`,
+        changeOrigin: true,
+        ws:true,
+        pathRewrite: {
+          '^/vncUrl': ''
+        }
+      },
+      '/serverUrl': {
+        target: `http://10.10.0.2:88`,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/serverUrl': ''
+        }
       }
     },
     // after: require('./mock/mock-server.js')
   },
   configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
     name: name,
     resolve: {
       alias: {
@@ -60,13 +85,9 @@ module.exports = {
     }
   },
   chainWebpack(config) {
-    // it can improve the speed of the first screen, it is recommended to turn on preload
-    // it can improve the speed of the first screen, it is recommended to turn on preload
     config.plugin('preload').tap(() => [
       {
         rel: 'preload',
-        // to ignore runtime.js
-        // https://github.com/vuejs/vue-cli/blob/dev/packages/@vue/cli-service/lib/config/app.js#L171
         fileBlacklist: [/\.map$/, /hot-update\.js$/, /runtime\..*\.js$/],
         include: 'initial'
       }

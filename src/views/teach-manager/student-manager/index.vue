@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header height="auto">
-      <el-form :inline="true" :model="queryForm" class="demo-form-inline">
+      <el-form :inline="true" :model="queryForm" ref="form" class="demo-form-inline">
         <el-form-item>
           <el-select v-model="queryForm.classInfoId" placeholder="请选择班级">
             <el-option
@@ -52,7 +52,12 @@
           :visible.sync="dialogFormVisible"
           width="750px"
         >
-          <el-form :model="form" :inline="true" :rules="rules" label-width="80px">
+          <el-form
+            :model="form"
+            :inline="true"
+            :rules="rules"
+            label-width="80px"
+          >
             <el-form-item label="名称" prop="userName">
               <el-input v-model="form.userName" :style="inputWidth"></el-input>
             </el-form-item>
@@ -63,22 +68,24 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="性别" prop="sex">
-              <el-select v-model="form.sex" placeholder="请选择" :style="inputWidth">
-                <el-option
-                  label="男"
-                  :value="true"
-                ></el-option>
-                <el-option
-                  label="女"
-                  :value="false"
-                ></el-option>
+              <el-select
+                v-model="form.sex"
+                placeholder="请选择"
+                :style="inputWidth"
+              >
+                <el-option label="男" :value="true"></el-option>
+                <el-option label="女" :value="false"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="学号" prop="stuNo">
               <el-input v-model="form.stuNo" :style="inputWidth"></el-input>
             </el-form-item>
             <el-form-item label="手机" prop="phone">
-              <el-input v-model="form.phone" autocomplete="off" :style="inputWidth"></el-input>
+              <el-input
+                v-model="form.phone"
+                autocomplete="off"
+                :style="inputWidth"
+              ></el-input>
             </el-form-item>
             <el-form-item label="小组" prop="groupName">
               <el-input v-model="form.groupName" :style="inputWidth"></el-input>
@@ -134,7 +141,7 @@
         </el-table-column>
         <el-table-column label="性别" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.sex ? '男' : '女' }}</span>
+            <span>{{ scope.row.sex ? "男" : "女" }}</span>
           </template>
         </el-table-column>
         <el-table-column label="手机号" align="center">
@@ -208,15 +215,15 @@ export default {
         userAccount: [
           { required: true, message: "请输入账号", trigger: "blur" }
         ],
-        userName: [
-          { required: true, message: "请输入名称", trigger: "blur" }
-        ],
+        userName: [{ required: true, message: "请输入名称", trigger: "blur" }],
         phone: [
-          { pattern: /^1[3-9](\d{9})$/, message: "请输入手机号", trigger: "blur" }
+          {
+            pattern: /^1[3-9](\d{9})$/,
+            message: "请输入手机号",
+            trigger: "blur"
+          }
         ],
-        sex: [
-          { required: true, message: "请选择性别", trigger: "blur" }
-        ],
+        sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
         classInfoId: [
           { required: true, message: "请选择班级", trigger: "blur" }
         ]
@@ -276,10 +283,11 @@ export default {
             type: "success",
             message: "添加成功"
           });
+          this.$refs.form.resetFields();
           this.query();
           this.dialogFormVisible = false;
         });
-        return
+        return;
       }
       updateUser(this.form).then(res => {
         this.$message({
@@ -308,22 +316,40 @@ export default {
       this.dialogFormVisible = true;
     },
     delUser(row) {
-      deleteUser(row.id).then(res => {
-        this.$message({
-          type: "success",
-          message: "删除成功"
-        });
-        this.query();
+      this.$confirm("确认删除吗", "删除学生", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "success",
+        callback: action => {
+          if (action === "confirm") {
+            deleteUser(row.id).then(res => {
+              this.$message({
+                type: "success",
+                message: "删除成功"
+              });
+              this.query();
+            });
+          }
+        }
       });
     },
     delClick() {
-      let userIds = this.multipleSelection.map(item => item.id);
-      deleteUserBatch({userIds: userIds}).then(res => {
-      this.$message({
+      this.$confirm("确认删除吗", "删除学生", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
         type: "success",
-        message: "删除成功"
-      });
-      this.query();
+        callback: action => {
+          if (action === "confirm") {
+            let userIds = this.multipleSelection.map(item => item.id);
+            deleteUserBatch({ userIds: userIds }).then(res => {
+              this.$message({
+                type: "success",
+                message: "删除成功"
+              });
+              this.query();
+            });
+          }
+        }
       });
     },
     reUser(row) {
@@ -340,6 +366,7 @@ export default {
 
 <style lang="scss" scoped>
 .el-container {
+  min-width: 1200px;
   .el-header {
     padding: 20px 35px 3px 35px;
     display: flex;

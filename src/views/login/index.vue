@@ -212,10 +212,14 @@ $cursor: #666666;
 
 /* reset element-ui css */
 .login-container {
+  display: flex;
+  height: 100%;
+  flex-flow: row;
+  align-items: center;
+  justify-content: center;
   .login-box {
     width: 1249px;
     height: 564px;
-    margin: 250px 368px;
     display: flex;
     flex-flow: row;
   }

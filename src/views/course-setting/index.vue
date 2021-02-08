@@ -108,7 +108,6 @@
             </div>
             <div class="content-class">
               <el-input v-model="ruleForm.urlExplain" style="width: 80%; margin-bottom: 20px;"></el-input>
-              <span>{{ ruleForm.urlExplain }}</span>
               <el-link :href="ruleForm.urlExplain" disabled>点击进入可视化操作</el-link>
             </div>
           </el-card>
@@ -206,13 +205,10 @@ export default {
           }
         ],
         name: [
-          { required: true, message: "请填写课程名称", trigger: "change" }
+          { required: true, message: "请填写课程名称", trigger: "blur" }
         ],
         classIds: [
-          { required: true, message: "请选择班级", trigger: "change" }
-        ],
-        vmInfoIdList: [
-          { required: true, message: "请选择班级", trigger: "change" }
+          { required: true, message: "请选择班级", trigger: "blur" }
         ]
       }
     };
@@ -271,7 +267,7 @@ export default {
                 name: "",
                 courseProduce: "",
                 classIds: [],
-                account: 0,
+                account: "",
                 videoPath: "",
                 instructionsPath: undefined,
                 topicPath: undefined,
@@ -301,6 +297,7 @@ export default {
       let param = new FormData();
       param.append("files", file.file);
       uploadTrains(param).then(res => {
+        console.log(3,res.data);
         this.ruleForm.topicPath = res.data;
       });
     },

@@ -8,6 +8,7 @@
             v-model="queryForm.ClassIds"
             placeholder="请选择班级"
             multiple
+            @change="classChange"
             collapse-tags
           >
             <el-option
@@ -109,7 +110,7 @@
           @pagination="query"
         />
       </el-card>
-      <el-card :body-style="{ width: '100%', height: '100%' }">
+      <el-card :body-style="{ width: '100%', minWidth: '650px', height: '100%' }">
         <div class="clear-fix">
           <span class="span-class">成绩统计</span>
         </div>
@@ -149,6 +150,7 @@ export default {
       classList: [],
       courseList: [],
       courseChangeVisble: true,
+      classChangeVisble: false,
       selectedCourses: [],
       echartsObj: {},
       queryForm: {
@@ -282,14 +284,6 @@ export default {
                 fontWeight: "light"
               }
             },
-            // data: [
-            //   { value: 0.1, name: "60-70" },
-            //   { value: 0.2, name: "80-90" },
-            //   { value: 0.1, name: "70-80" },
-            //   { value: 0.3, name: "90-99" },
-            //   { value: 0.2, name: "0-60" },
-            //   { value: 0.1, name: "100" }
-            // ]
             data: this.echartsObj.allClassStatistics
           }
         ]
@@ -316,14 +310,24 @@ export default {
         this.total = res.data.total;
         this.listLoading = false;
         if(this.courseChangeVisble) {
-          this.$set(this, 'selectedCourses', res.data.courses);
+          let arr = res.data.courses.sort(function(a,b) {
+            return a['createTime'] - b['createTime']
+          });
+          this.$set(this, 'selectedCourses',arr);
           this.courseChangeVisble = false;
+        }
+        if(this.classChangeVisble || this.courseChangeVisble) {
           this.initChars();
+          this.classChangeVisble = false;
+          this.courseChangeVisble = false;
         }
       });
     },
     courseChange() {
       this.courseChangeVisble = true;
+    },
+    classChange() {
+      this.classChangeVisble = true;
     }
   }
 };
@@ -333,6 +337,7 @@ export default {
 .el-container {
   width: 100%;
   height: 100%;
+  min-width: 1200px;
   .el-header {
     padding: 20px 35px 3px 10px;
     display: flex;

@@ -62,9 +62,9 @@
               {{ scope.row.manageMsg }}
             </template>
           </el-table-column>
-          <el-table-column label="成功" align="center">
+          <el-table-column label="日志类型" align="center">
             <template slot-scope="scope">
-              <span>{{ !scope.row.manageType ? '成功': '失败'}}</span>
+              <span>{{ managerType[scope.row.manageType]}}</span>
             </template>
           </el-table-column>
           <el-table-column label="时间" align="center">
@@ -86,6 +86,7 @@
 <script>
   import Pagination from '@/components/Pagination/index.vue'
   import { logInfoList, deleteLogs, clearAll } from '@/api/log-manager.js'
+  import { appConsts } from '@/appConsts'
 export default {
   name: 'LogManager',
   components: { Pagination },
@@ -110,6 +111,7 @@ export default {
       listLoading: true,
       list: [],
       selectList: [],
+      managerType: appConsts.managerType,
       total: 0,
       queryForm: {
         pageIndex: 1,
@@ -173,6 +175,7 @@ export default {
 
 <style lang='scss' scoped>
   .el-container {
+    min-width: 1200px;
     .el-header {
       padding: 20px 35px 3px 35px;
       display: flex;

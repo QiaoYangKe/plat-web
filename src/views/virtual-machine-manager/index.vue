@@ -338,19 +338,38 @@ export default {
             }
           );
         } else if(this.form.type === 1) {
+          this.loading = this.$loading({
+            lock: true,
+            text: `请稍等`,
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
           BatchStart(this.form).then(
             () => {
               this.$message({
                 type: "success",
                 message: "开启成功"
               });
+              this.loading.close();
               this.dialogFormVisible = false;
               this.query();
             }
           );
         } else if(this.form.type === 2) {
+          this.loading = this.$loading({
+            lock: true,
+            text: `请稍等`,
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
           this.getIp();
         } else {
+          this.loading = this.$loading({
+            lock: true,
+            text: `请稍等`,
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)"
+          });
            BatchVMStop(this.form).then(
             () => {
               this.$message({
@@ -358,6 +377,7 @@ export default {
                 message: "关闭成功"
               });
               this.dialogFormVisible = false;
+              this.loading.close();
               this.query();
             }
           );
@@ -373,6 +393,7 @@ export default {
         type: "success",
         message: "成功"
         });
+        this.loading.close();
         this.query();
         this.dialogFormVisible = false;
       })
@@ -384,11 +405,12 @@ export default {
       await CloneSpeed().then(async res => {
         this.loading.setText(`请稍等，${res.data}%`);
         if(res.data !== '100') {
-          await sleep(1000);
+          await sleep(500);
           await this.loadPercent();
         } else {
           this.dialogFormVisible = false;
           this.loading.close();
+          this.query();
           this.$message({
             type: "success",
             message: "成功"
@@ -436,6 +458,7 @@ export default {
 
 <style lang="scss" scoped>
 .el-container {
+  min-width: 1300px;
   .el-header {
     padding: 20px 35px 3px 20px;
     display: flex;

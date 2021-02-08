@@ -203,40 +203,13 @@ export default {
         this.groupLoading = false
       })
     },
-    // bindGroupSubmit() {
-    //   BindGroup(this.form).then(res => {
-    //     this.dialogFormVisible = false
-    //     this.$message({
-    //       type: 'success',
-    //       message: '绑定成功'
-    //     })
-    //   })
-    // },
     query() {
-        // this.list = [{},{}];
-        // this.total = 2;
-        // this.listLoading = false;
       courseList(this.queryForm).then((res) => {
         this.list = res.data;
         this.total = res.total;
         this.listLoading = false;
       });
     },
-    // cloneCourse(row) {
-    //   const loading = this.$loading({
-    //     lock: true,
-    //     text: "请稍等，预计2-3分钟",
-    //     spinner: "el-icon-loading",
-    //     background: "rgba(0, 0, 0, 0.7)",
-    //   });
-    //   vmClone({ courseId: row.id, vmCount: 1 }).then((res) => {
-    //     this.$message({
-    //       type: "success",
-    //       message: "克隆成功",
-    //     });
-    //     loading.close();
-    //   });
-    // },
     changeCourseState(row) {
       updateCourseState(row.id).then((res) => {
         this.$message({
@@ -255,6 +228,7 @@ export default {
 
 <style lang='scss' scoped>
 .el-container {
+  min-width: 1200px;
   .el-header {
     padding: 20px 35px 3px 35px;
     display: flex;

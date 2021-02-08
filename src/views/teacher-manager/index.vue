@@ -47,12 +47,12 @@
          <el-form-item>
           <el-button type="danger" @click="delClick">删除</el-button>
         </el-form-item>
-        <el-dialog title="老师信息" :visible.sync="dialogFormVisible" width="750px">
+        <el-dialog title="老师信息" :visible.sync="dialogFormVisible" width="800px">
           <el-form :model="form" :inline="true" :rules="rules" ref="form" label-width="100px">
-            <el-form-item label="名称" :prop="userName">
+            <el-form-item label="名称" prop="userName">
               <el-input v-model="form.userName" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="性别" :prop="sex">
+            <el-form-item label="性别" prop="sex">
               <el-select v-model="form.sex" placeholder="请选择" :style="inputWidth">
                 <el-option
                   label="男"
@@ -64,19 +64,23 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="工号" :prop="stuNo">
+            <el-form-item label="工号" prop="stuNo">
               <el-input v-model="form.stuNo" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="手机" :prop="phone">
+            <el-form-item label="手机" prop="phone">
               <el-input v-model="form.phone" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="职称" :prop="remarks">
+            <el-form-item label="职称" prop="remarks">
               <el-input v-model="form.remarks" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="账号" :prop="userAccount">
+            
+            <el-form-item label="虚拟机数" :prop="remarks">
+              <el-input v-model="form.vmCount" type="number" :style="inputWidth"></el-input>
+            </el-form-item>
+            <el-form-item label="账号" prop="userAccount">
               <el-input v-model="form.userAccount" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="班级" :prop="classInfoId">
+            <el-form-item label="班级" prop="classInfoId">
               <el-select v-model="form.classInfoId" placeholder="请选择" :style="inputWidth">
                 <el-option
                   v-for="item in classList"
@@ -139,6 +143,11 @@
             <span>{{ scope.row.phone }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="虚拟机最大数量" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.vmCount }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
             <el-button type="text" @click="editUser(scope.row)">编辑</el-button>
@@ -194,7 +203,20 @@ export default {
       classList: [],
       fileList: [],
       multipleSelection: [],
-      form: {},
+      form: {
+        id: "",
+        stuNo: "",
+        userAccount: "",
+        userName: "",
+        userType: 0,
+        vmCount: 0,
+        groupName: "",
+        classInfoId: "",
+        phone: "",
+        picture: "",
+        sex: true,
+        remarks: ""
+      },
       filePath: "",
       rules: {
         stuNo: [
@@ -331,6 +353,7 @@ export default {
 
 <style lang="scss" scoped>
 .el-container {
+  min-width: 1200px;
   .el-header {
     padding: 20px 35px 3px 35px;
     display: flex;

@@ -11,19 +11,16 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
-  // start progress bar
   NProgress.start()
 
-  // set page title
   document.title = getPageTitle(to.meta.title)
 
-  // determine whether the user has logged in
   const hasToken = getToken()
 
   if (hasToken) {
     if (to.path === '/login') {
       next({ path: '/' })
-      NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
+      NProgress.done()
     } else {
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
@@ -49,10 +46,9 @@ router.beforeEach(async(to, from, next) => {
     /* has no token*/
 
     if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
       next()
     } else {
-      // other pages that do not have permission to access are redirected to the login page.
+      // 路由bug
       next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
@@ -60,6 +56,5 @@ router.beforeEach(async(to, from, next) => {
 })
 
 router.afterEach(() => {
-  // finish progress bar
   NProgress.done()
 })

@@ -142,19 +142,12 @@
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
       </template>
       <div class="right-menu-group">
-        <!-- <el-button type="text" icon="el-icon-user-solid" class="button-style">{{
-          name
-        }}</el-button> -->
-        <!-- <el-divider direction="vertical"></el-divider> -->
         <el-dropdown trigger="click" class="avatar-container">
           <div class="avatar-wrapper">
             <el-avatar :size="38"  shape="square" :src="userform.picture" @error="errorHandler">
               <img :src="userform.picture"/>
            </el-avatar>
-            <!-- <el-image :src="userform.picture" class="user-avatar"></el-image> -->
             {{ name }}
-            <!-- <i class="el-icon-caret-bottom" /> -->
-            <!-- <el-button type="text" class="button-style">操作中心</el-button> -->
             <i class="el-icon-caret-bottom" />
           </div>
           <el-dropdown-menu slot="dropdown">
@@ -291,12 +284,9 @@ export default {
         console.log("dataUrl---", e.target.result);
         // 从dataurl截取的base64，用来传数据
         console.log("base64---", e.target.result.replace(/^.*,(.*)$/, "$1"));
-
-        // 看懂了否乔同学 哦哦
       };
       // 不用组件自带上传自己写上传逻辑
       return false;
-      return isJPG && isLt2M;
     },
     getName() {
       this.name = store.getters.name;
@@ -354,6 +344,9 @@ export default {
     cancelUser() {
       this.resetForm("userform");
       this.dialogFormUserVisible = false;
+    },
+    errorHandler() {
+      return true;
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();

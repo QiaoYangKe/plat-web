@@ -32,7 +32,7 @@
         </el-table-column>
         <el-table-column label="成绩" align="center">
           <template slot-scope="scope">
-            {{ scope.row.score==null? '未上传':scope.row.score }}
+            {{ scope.row.score==0? '未打分':scope.row.score }}
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
@@ -186,6 +186,7 @@ export default {
 
 <style lang="scss" scoped>
 .el-container {
+  min-width: 1200px;
   .el-header {
     padding: 20px 35px 3px 35px;
     display: flex;

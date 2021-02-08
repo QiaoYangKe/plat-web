@@ -34,6 +34,7 @@
             >
               {{ item.split("/").pop() }}
             </el-link>
+            
           </div>
           <el-divider></el-divider>
         </el-timeline-item>
@@ -195,9 +196,10 @@ export default {
   }
   .files-style {
     display: flex;
-    flex-flow: column;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
     .link-style {
-      display: inline-block;
       margin-bottom: 5px;
       color: #0c81f5;
     }

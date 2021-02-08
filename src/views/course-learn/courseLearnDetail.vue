@@ -19,7 +19,7 @@
               <span style="display:block;">
               {{ currentCourse.account }} 
               </span>
-              <el-link type="primary" style="display: inline-block;">操作手册下载</el-link>
+              <el-link type="primary" :href="'/baseUrl'+currentCourse.instructionsPath"  target="_blank" style="display: inline-block;">操作手册下载</el-link>
             </el-card>
           </el-aside>
           <el-main class="leaning-main">
@@ -78,7 +78,7 @@
                   <span>{{
                     teamMembers.length === 0
                       ? ""
-                      : teamMembers.map(v => v.userName).join("，")
+                      : teamMembers.map(v => v.userName + v.vmip).join("，")
                   }}</span>
                 </div>
                 <div class="content-class">
@@ -157,7 +157,7 @@ export default {
       fileCount: 0,
       guestIp: "",
       score: 0,
-      vncUrl: appConsts.vncUrl,
+      vncUrl: ``,
       ruleForm: {
         lessonFile: [],
         courseInfoId: ""
@@ -318,8 +318,9 @@ export default {
     },
     teamMember() {
       CloneVm().then(res => {
+        // this.vncUrl = `${appConsts.vncUrl}/vnc.html?path=?token=`;
         if (res.data[0] != null) {
-          this.vncUrl = `${appConsts.vncUrl}${res.data[0].vmName}`;
+          this.vncUrl = `${appConsts.vncUrl}/vnc.html?path=?token=${res.data[0].vmName}`;
           let arr = [];
           res.data.forEach(e => {
             arr.push(e.id);

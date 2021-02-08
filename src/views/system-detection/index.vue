@@ -63,7 +63,7 @@ export default {
   name: "SystemDetection",
   data() {
     return {
-      baseUrl: appConsts.echarsUrl,
+      baseUrl: '/echartUrl/api/v1/data',
       timeWork: null,
       systemData: {
         cpu: {

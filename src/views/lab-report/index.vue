@@ -225,6 +225,7 @@ export default {
 
 <style lang='scss' scoped>
 .el-container {
+  min-width: 1200px;
   .el-header {
     padding: 20px 35px 3px 35px;
     display: flex;

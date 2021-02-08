@@ -148,6 +148,7 @@ export default {
 
 <style lang='scss' scoped>
   .el-container {
+    min-width: 1200px;
     .el-main {
       padding: 20px 35px 10px 35px;
     }

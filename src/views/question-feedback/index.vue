@@ -158,6 +158,7 @@ export default {
 
 <style lang="scss" scoped>
 .el-container {
+  min-width: 1200px;
   .el-header {
     margin-top: 10px;
   }
