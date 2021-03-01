@@ -73,15 +73,17 @@
             <el-form-item label="职称" prop="remarks">
               <el-input v-model="form.remarks" :style="inputWidth"></el-input>
             </el-form-item>
-            
-            <el-form-item label="虚拟机数" :prop="remarks">
-              <el-input v-model="form.vmCount" type="number" :style="inputWidth"></el-input>
-            </el-form-item>
             <el-form-item label="账号" prop="userAccount">
               <el-input v-model="form.userAccount" :style="inputWidth"></el-input>
             </el-form-item>
-            <el-form-item label="班级" prop="classInfoId">
-              <el-select v-model="form.classInfoId" placeholder="请选择" :style="inputWidth">
+            <el-form-item label="教研室" prop="department">
+              <el-input v-model="form.department" :style="inputWidth"></el-input>
+            </el-form-item>
+            <el-form-item label="专业" prop="major">
+              <el-input v-model="form.major" :style="inputWidth"></el-input>
+            </el-form-item>
+            <el-form-item label="班级" prop="manageClass">
+              <el-select v-model="form.manageClass" multiple placeholder="请选择" :style="inputWidth">
                 <el-option
                   v-for="item in classList"
                   :key="item.id"
@@ -123,9 +125,14 @@
             {{ scope.row.userName }}
           </template>
         </el-table-column>
+        <el-table-column label="账号">
+          <template slot-scope="scope">
+            {{ scope.row.userAccount }}
+          </template>
+        </el-table-column>
         <el-table-column label="班级" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.className }}</span>
+            <span>{{ scope.row.classNames }}</span>
           </template>
         </el-table-column>
         <el-table-column label="性别" align="center">
@@ -138,14 +145,19 @@
             <span>{{ scope.row.remarks }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="教研室" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.department }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="专业" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.major }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="手机号" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.phone }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="虚拟机最大数量" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.vmCount }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
@@ -180,7 +192,7 @@
 <script>
 import Pagination from "@/components/Pagination/index.vue";
 import {
-  userList,
+  teacherList,
   resetPwd,
   updateUser,
   addUser,
@@ -214,6 +226,8 @@ export default {
         classInfoId: "",
         phone: "",
         picture: "",
+        department: "",
+        major: "",
         sex: true,
         remarks: ""
       },
@@ -267,9 +281,11 @@ export default {
         userType: 0,
         vmCount: 0,
         groupName: "",
-        classInfoId: "",
+        manageClass: [],
         phone: "",
         picture: "",
+        department: "",
+        major: "",
         sex: true,
         remarks: ""
       };
@@ -286,7 +302,7 @@ export default {
       });
     },
     query() {
-      userList(this.queryForm).then(res => {
+      teacherList(this.queryForm).then(res => {
         this.list = res.obj;
         this.total = res.total;
         this.listLoading = false;

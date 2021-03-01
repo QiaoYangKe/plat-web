@@ -134,6 +134,11 @@
             {{ scope.row.userName }}
           </template>
         </el-table-column>
+        <el-table-column label="账号">
+          <template slot-scope="scope">
+            {{ scope.row.userAccount }}
+          </template>
+        </el-table-column>
         <el-table-column label="班级" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.className }}</span>

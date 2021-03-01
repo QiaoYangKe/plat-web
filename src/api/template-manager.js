@@ -52,6 +52,22 @@ export function GuestIP(data) {
   })
 }
 
+export function GuestIPById(data) {
+  return request({
+    url: '/api/Template/GuestIPById',
+    method: 'get',
+    params: data
+  })
+}
+
+export function VmBindUser(data) {
+  return request({
+    url: '/api/Template/VmBindUser',
+    method: 'post',
+    data
+  })
+}
+
 export function vmClone(data) {
   return request({
     url: '/api/VMInfo/VMClone',

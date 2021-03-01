@@ -13,14 +13,19 @@
           <el-aside width="auto">
             <el-card :body-style="{ width: '351px', height: '850px' }">
               <div class="clear-fix">
-                <span class="span-class">操作手册</span>
+                <span class="span-class">课程介绍</span>
               </div>
 
-              <span>
-                河南中盾云安信息科技有限公司（简称“中盾云安”）成立于2016年9月，是汉威科技（股票代码：300007）旗下智慧安全板块的重要成员企业，2019年度获评国家高新技术企业。中盾云安定位为区块链综合解决方案提供商，致力于依托区块链、电子签名、商用密码、5G、边缘计算等技术，打造数字经济、赋能产业发展。<br />
-
-                中盾云安是河南省首家区块链技术落地应用企业、中国区块链生态联盟区块链安全标准工作组成员单位、阿里巴巴“云合计划”的第一批合作伙伴、芝麻信用河南唯一合作伙伴、中原云统一认证服务平台重要支撑单位，曾多次参与区块链、云计算、大数据、智能制造、智慧城市等领域的课题研究、标准制订和方案论证，并承担国家教育部教育卡安全标准制订、工信部可信智能芯片、国家卫计委居民健康卡、国家工商局电子营业执照等应用的研究工作。
+              <span style="display:block;">
+                {{ currentCourse.account }}
               </span>
+              <el-link
+                type="primary"
+                :href="'/baseUrl' + currentCourse.instructionsPath"
+                target="_blank"
+                style="display: inline-block;"
+                >操作手册下载</el-link
+              >
             </el-card>
           </el-aside>
           <el-main class="leaning-main">
@@ -79,7 +84,7 @@
                   <span>{{
                     teamMembers.length === 0
                       ? ""
-                      : teamMembers.map(v => v.userName).join("，")
+                      : teamMembers.map(v => v.userName + v.vmip).join("，")
                   }}</span>
                 </div>
                 <div class="content-class">
@@ -96,9 +101,65 @@
       </el-tab-pane>
       <el-tab-pane label="课程练习" name="second">
         <el-container>
+          <el-aside width="auto">
+            <el-card :body-style="{ width: '360px', height: '850px' }">
+              <div class="clear-fix">
+                <span class="span-class">个人信息</span>
+              </div>
+              <div class="aside-style">
+                <div class="img-box">
+                  <el-avatar
+                    :size="170"
+                    shape="square"
+                    :src="userform.picture"
+                    @error="errorHandler"
+                  >
+                    <img :src="userform.picture" />
+                  </el-avatar>
+                  <el-form ref="form" :model="userform" label-width="50px">
+                    <el-form-item label="学号:">
+                      <span>{{ userform.stuNo }}</span>
+                    </el-form-item>
+                    <el-form-item label="名称:">
+                      <span>{{ userform.userName }}</span>
+                    </el-form-item>
+                    <el-form-item label="班级:">
+                      <span>{{ userform.className }}</span>
+                    </el-form-item>
+                    <el-form-item label="课程:">
+                      <span>{{ currentCourse.name }}</span>
+                    </el-form-item>
+                    <el-form-item label="手机:">
+                      <span>{{ userform.phone }}</span>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </div>
+              <el-divider content-position="left">
+                <span>{{ currentCourse.name }}答题卡 {{ score }}</span>
+              </el-divider>
+              <div class="button-box">
+                <el-button
+                  :type="
+                    answerVisible
+                      ? item.result === item.answer
+                        ? 'success'
+                        : 'danger'
+                      : 'primary'
+                  "
+                  :key="index"
+                  v-for="(item, index) in trains"
+                  size="small"
+                  :plain="item.answer === '' || answerVisible"
+                  @click="currentTrain = index"
+                  >{{ index + 1 }}</el-button
+                >
+              </div>
+            </el-card>
+          </el-aside>
           <el-main>
             <el-card
-              :body-style="{ width: 'calc(100% + 5px)', height: '100%' }"
+              :body-style="{ width: 'calc(100% + 5px)', height: '850px' }"
             >
               <el-button
                 @click="submitAnswer"
@@ -111,23 +172,21 @@
               <div class="clear-fix">
                 <span class="span-class">课程练习</span>
               </div>
-              <div class="train-box">
-                <el-row :gutter="2">
-                  <el-col
-                    :sm="8"
-                    :md="6"
-                    :lg="6"
-                    :xl="6"
-                    v-for="(item, index) in trains"
-                    :key="index"
-                    ><train
-                      :data="item"
-                      :index="index + 1"
-                      :answerVisible="answerVisible"
-                    ></train
-                  ></el-col>
-                </el-row>
+              <div class="train-box" @mousewheel="handleScroll">
+                <train
+                  :data="trains[currentTrain]"
+                  :index="currentTrain + 1"
+                  :answerVisible="answerVisible"
+                ></train>
               </div>
+              <el-button @click="currentTrain--" :disabled="currentTrain === 0"
+                >上一题</el-button
+              >
+              <el-button
+                :disabled="currentTrain === trains.length - 1"
+                @click="currentTrain++"
+                >下一题</el-button
+              >
             </el-card>
           </el-main>
         </el-container>
@@ -145,6 +204,7 @@ import { courseInfoById } from "@/api/course-info";
 import { appConsts } from "@/appConsts";
 import { VmById, CloneVm } from "@/api/vm-info";
 import { randomExercises, computeScore } from "@/api/exercise";
+import { getInfo } from "@/api/user";
 export default {
   name: "CourseDetail",
   components: { train },
@@ -157,12 +217,14 @@ export default {
       currentCourse: {},
       fileCount: 0,
       guestIp: "",
-      score: 0,
-      vncUrl: appConsts.vncUrl,
+      score: null,
+      vncUrl: `${appConsts.vncUrl}/vnc.html?path=?token=`,
+      userform: { stuNo: "", sex: "", userName: "", phone: "", className: "" },
       ruleForm: {
         lessonFile: [],
         courseInfoId: ""
       },
+      currentTrain: 0,
       playerOptions: {
         playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
         autoplay: false, //如果true,浏览器准备好时开始回放。
@@ -185,8 +247,8 @@ export default {
       }
     };
   },
-  mounted() {
-    this.teamMember();
+  async mounted() {
+    await this.teamMember();
     this.initCourse();
   },
   methods: {
@@ -195,8 +257,19 @@ export default {
         this.initTrains();
       }
     },
+    handleScroll(e) {
+      let direction = e.deltaY > 0 ? 'down':'up';
+      if(direction === 'down'&&this.currentTrain !== (this.trains.length-1)) {
+        this.currentTrain++;
+      } else if(direction === 'up'&&this.currentTrain !== 0){
+        this.currentTrain--;
+      }
+    },
     exitLesson() {
       this.$router.push("/course-manager");
+    },
+    errorHandler() {
+      return true;
     },
     initCourse() {
       this.ruleForm.courseInfoId = this.$route.query.id;
@@ -253,9 +326,12 @@ export default {
                 res => {
                   this.score = res.score;
                   res.data.list.forEach(item => {
-                    this.$set(this.trains.find(it => it.id === item.exercisesId), 'result',item.exercisesOptionId);
+                    this.$set(
+                      this.trains.find(it => it.id === item.exercisesId),
+                      "result",
+                      item.exercisesOptionId
+                    );
                   });
-                  console.log(this.trains);
                   this.answerVisible = true;
                   loading.close();
                 },
@@ -301,7 +377,6 @@ export default {
       });
     },
     uploadReport(file) {
-      console.log(file);
       let param = new FormData();
       param.append("files", file.file);
       uploadRport(param).then(res => {
@@ -311,25 +386,25 @@ export default {
         }
       });
     },
-    removeFile(file, fileList) {
-      console.log(file, this.ruleForm.lessonFile);
-    },
     onSubmit() {
       this.$refs.upload.submit();
     },
-    teamMember() {
+    async teamMember() {
+      await getInfo().then(res => {
+        this.$set(this, "userform", res.data);
+      });
       CloneVm().then(res => {
         if (res.data[0] != null) {
-          this.vncUrl = `${appConsts.vncUrl}${res.data[0].vmName}`;
+          this.vncUrl = `${appConsts.vncUrl}/vnc.html?path=?token=${res.data[0].vmName}`;
           let arr = [];
           res.data.forEach(e => {
             arr.push(e.id);
           });
           VmById(arr.shift()).then(response => {
+            console.log(3, response);
             this.guestIp = response.data.vmip;
           });
         } else {
-          this.vncUrl = `${appConsts.vncUrl}`;
           this.$message({
             message: "没有分配虚拟机",
             type: "warning"
@@ -355,6 +430,7 @@ export default {
   background-color: rgba($color: #000000, $alpha: 0.1);
   padding: 5px;
   min-width: 1000px;
+  margin-bottom: 5px;
   .el-card {
     width: 100%;
     margin-bottom: 2px;
@@ -377,6 +453,17 @@ export default {
         margin-right: -10px;
         .el-card {
           height: 100%;
+          .aside-style {
+            display: flex;
+            flex-flow: column;
+            .img-box {
+              display: flex;
+              flex-flow: row;
+              .el-form-item {
+                margin-bottom: 0;
+              }
+            }
+          }
         }
       }
       .el-main {

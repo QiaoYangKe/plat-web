@@ -17,15 +17,9 @@
               </div>
 
               <span style="display:block;">
-                {{ currentCourse.account }}
+              {{ currentCourse.account }} 
               </span>
-              <el-link
-                type="primary"
-                :href="'/baseUrl' + currentCourse.instructionsPath"
-                target="_blank"
-                style="display: inline-block;"
-                >操作手册下载</el-link
-              >
+              <el-link type="primary" :href="'/baseUrl'+currentCourse.instructionsPath"  target="_blank" style="display: inline-block;">操作手册下载</el-link>
             </el-card>
           </el-aside>
           <el-main class="leaning-main">
@@ -101,65 +95,9 @@
       </el-tab-pane>
       <el-tab-pane label="课程练习" name="second">
         <el-container>
-          <el-aside width="auto">
-            <el-card :body-style="{ width: '360px', height: '850px' }">
-              <div class="clear-fix">
-                <span class="span-class">个人信息</span>
-              </div>
-              <div class="aside-style">
-                <div class="img-box">
-                  <el-avatar
-                    :size="170"
-                    shape="square"
-                    :src="userform.picture"
-                    @error="errorHandler"
-                  >
-                    <img :src="userform.picture" />
-                  </el-avatar>
-                  <el-form ref="form" :model="userform" label-width="50px">
-                    <el-form-item label="学号:">
-                      <span>{{ userform.stuNo }}</span>
-                    </el-form-item>
-                    <el-form-item label="名称:">
-                      <span>{{ userform.userName }}</span>
-                    </el-form-item>
-                    <el-form-item label="班级:">
-                      <span>{{ userform.className }}</span>
-                    </el-form-item>
-                    <el-form-item label="课程:">
-                      <span>{{ currentCourse.name }}</span>
-                    </el-form-item>
-                    <el-form-item label="手机:">
-                      <span>{{ userform.phone }}</span>
-                    </el-form-item>
-                  </el-form>
-                </div>
-              </div>
-              <el-divider content-position="left">
-                <span>{{ currentCourse.name }}答题卡 {{ score }}</span>
-              </el-divider>
-              <div class="button-box">
-                <el-button
-                  :type="
-                    answerVisible
-                      ? item.result === item.answer
-                        ? 'success'
-                        : 'danger'
-                      : 'primary'
-                  "
-                  :key="index"
-                  v-for="(item, index) in trains"
-                  size="small"
-                  :plain="item.answer === '' || answerVisible"
-                  @click="currentTrain = index"
-                  >{{ index + 1 }}</el-button
-                >
-              </div>
-            </el-card>
-          </el-aside>
           <el-main>
             <el-card
-              :body-style="{ width: 'calc(100% + 5px)', height: '850px' }"
+              :body-style="{ width: 'calc(100% + 5px)', height: '100%' }"
             >
               <el-button
                 @click="submitAnswer"
@@ -172,21 +110,23 @@
               <div class="clear-fix">
                 <span class="span-class">课程练习</span>
               </div>
-              <div class="train-box" @mousewheel="handleScroll">
-                <train
-                  :data="trains[currentTrain]"
-                  :index="currentTrain + 1"
-                  :answerVisible="answerVisible"
-                ></train>
+              <div class="train-box">
+                <el-row :gutter="2">
+                  <el-col
+                    :sm="8"
+                    :md="6"
+                    :lg="6"
+                    :xl="6"
+                    v-for="(item, index) in trains"
+                    :key="index"
+                    ><train
+                      :data="item"
+                      :index="index + 1"
+                      :answerVisible="answerVisible"
+                    ></train
+                  ></el-col>
+                </el-row>
               </div>
-              <el-button @click="currentTrain--" :disabled="currentTrain === 0"
-                >上一题</el-button
-              >
-              <el-button
-                :disabled="currentTrain === trains.length - 1"
-                @click="currentTrain++"
-                >下一题</el-button
-              >
             </el-card>
           </el-main>
         </el-container>
@@ -204,7 +144,6 @@ import { courseInfoById } from "@/api/course-info";
 import { appConsts } from "@/appConsts";
 import { VmById, CloneVm } from "@/api/vm-info";
 import { randomExercises, computeScore } from "@/api/exercise";
-import { getInfo } from "@/api/user";
 export default {
   name: "CourseLearnDetail",
   components: { train },
@@ -217,14 +156,12 @@ export default {
       currentCourse: {},
       fileCount: 0,
       guestIp: "",
-      score: null,
-      vncUrl: `${appConsts.vncUrl}/vnc.html?path=?token=`,
-      userform: { stuNo: "", sex: "", userName: "", phone: "", className: "" },
+      score: 0,
+      vncUrl: ``,
       ruleForm: {
         lessonFile: [],
         courseInfoId: ""
       },
-      currentTrain: 0,
       playerOptions: {
         playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
         autoplay: false, //如果true,浏览器准备好时开始回放。
@@ -247,8 +184,8 @@ export default {
       }
     };
   },
-  async mounted() {
-    await this.teamMember();
+  mounted() {
+    this.teamMember();
     this.initCourse();
   },
   methods: {
@@ -257,19 +194,8 @@ export default {
         this.initTrains();
       }
     },
-    handleScroll(e) {
-      let direction = e.deltaY > 0 ? 'down':'up';
-      if(direction === 'down'&&this.currentTrain !== (this.trains.length-1)) {
-        this.currentTrain++;
-      } else if(direction === 'up'&&this.currentTrain !== 0){
-        this.currentTrain--;
-      }
-    },
     exitLesson() {
       this.$router.push("/course-learn");
-    },
-    errorHandler() {
-      return true;
     },
     initCourse() {
       this.ruleForm.courseInfoId = this.$route.query.id;
@@ -326,12 +252,9 @@ export default {
                 res => {
                   this.score = res.score;
                   res.data.list.forEach(item => {
-                    this.$set(
-                      this.trains.find(it => it.id === item.exercisesId),
-                      "result",
-                      item.exercisesOptionId
-                    );
+                    this.$set(this.trains.find(it => it.id === item.exercisesId), 'result',item.exercisesOptionId);
                   });
+                  console.log(this.trains);
                   this.answerVisible = true;
                   loading.close();
                 },
@@ -377,6 +300,7 @@ export default {
       });
     },
     uploadReport(file) {
+      console.log(file);
       let param = new FormData();
       param.append("files", file.file);
       uploadRport(param).then(res => {
@@ -386,14 +310,15 @@ export default {
         }
       });
     },
+    removeFile(file, fileList) {
+      console.log(file, this.ruleForm.lessonFile);
+    },
     onSubmit() {
       this.$refs.upload.submit();
     },
-    async teamMember() {
-      await getInfo().then(res => {
-        this.$set(this, "userform", res.data);
-      });
+    teamMember() {
       CloneVm().then(res => {
+        // this.vncUrl = `${appConsts.vncUrl}/vnc.html?path=?token=`;
         if (res.data[0] != null) {
           this.vncUrl = `${appConsts.vncUrl}/vnc.html?path=?token=${res.data[0].vmName}`;
           let arr = [];
@@ -401,10 +326,11 @@ export default {
             arr.push(e.id);
           });
           VmById(arr.shift()).then(response => {
-            console.log(3, response);
+            console.log(3,response);
             this.guestIp = response.data.vmip;
           });
         } else {
+          this.vncUrl = `${appConsts.vncUrl}`;
           this.$message({
             message: "没有分配虚拟机",
             type: "warning"
@@ -430,7 +356,6 @@ export default {
   background-color: rgba($color: #000000, $alpha: 0.1);
   padding: 5px;
   min-width: 1000px;
-  margin-bottom: 5px;
   .el-card {
     width: 100%;
     margin-bottom: 2px;
@@ -453,17 +378,6 @@ export default {
         margin-right: -10px;
         .el-card {
           height: 100%;
-          .aside-style {
-            display: flex;
-            flex-flow: column;
-            .img-box {
-              display: flex;
-              flex-flow: row;
-              .el-form-item {
-                margin-bottom: 0;
-              }
-            }
-          }
         }
       }
       .el-main {

@@ -16,6 +16,14 @@ export function userList(data) {
   })
 }
 
+export function teacherList(data) {
+  return request({
+    url: '/api/UserInfo/TeacherList',
+    method: 'post',
+    data
+  })
+}
+
 export function updatePwd(data) {
   return request({
     url: '/api/UserInfo/UpdatePwd',
